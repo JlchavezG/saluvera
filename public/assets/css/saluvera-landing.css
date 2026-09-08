@@ -1,0 +1,1922 @@
+/**
+ * SALUVERA - Landing Page Styles
+ * 
+ * Design System: Deep Teal + Mint + Warm Sand
+ * Tipografía: Inter
+ * Regla: 60/30/10 (neutros/teal/acento)
+ * 
+ * @author SALUVERA
+ * @version 1.0.0
+ */
+
+/* ============================================
+   1. TOKENS DEL DESIGN SYSTEM
+   ============================================ */
+:root {
+    /* === Primary — Deep Teal === */
+    --color-deep-teal: #123C46;
+    --color-midnight-teal: #0B2931;
+    --color-teal-dark: #164A55;
+    --color-teal: #1F5964;
+    
+    /* === Accent — Mint === */
+    --color-salu-mint: #4FD1B5;
+    --color-mint-dark: #32B99D;
+    --color-mint-soft: #DDF5EF;
+    --color-mint-pale: #EEF9F6;
+    
+    /* === Warm Sand === */
+    --color-warm-cloud: #F7F8F6;
+    --color-warm-sand: #F2EFE8;
+    --color-cream: #FAF9F5;
+    --color-soft-stone: #E3E7E4;
+    
+    /* === Neutrales === */
+    --color-ink: #17252A;
+    --color-charcoal: #243238;
+    --color-slate: #66777C;
+    --color-muted: #879499;
+    --color-border: #DCE4E2;
+    --color-border-soft: #E9EEEC;
+    --color-white: #FFFFFF;
+    
+    /* === Semánticos === */
+    --color-success: #36A269;
+    --color-success-soft: #E3F4EB;
+    --color-warning: #D99A32;
+    --color-warning-soft: #FFF3DA;
+    --color-error: #D65A5A;
+    --color-error-soft: #FCE8E8;
+    --color-info: #4F7CAC;
+    --color-info-soft: #E8F0F8;
+    --color-purple: #8B70B8;
+    --color-purple-soft: #F0EBF7;
+    
+    /* === Tipografía === */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* === Border Radius === */
+    --radius-button: 10px;
+    --radius-input: 10px;
+    --radius-card: 14px;
+    --radius-modal: 18px;
+    --radius-badge: 999px;
+    
+    /* === Sombras === */
+    --shadow-card: 0 1px 3px rgba(18, 60, 70, 0.06), 0 8px 24px rgba(18, 60, 70, 0.04);
+    --shadow-card-hover: 0 4px 12px rgba(18, 60, 70, 0.08), 0 12px 32px rgba(18, 60, 70, 0.06);
+    --shadow-navbar: 0 4px 20px rgba(18, 60, 70, 0.08);
+    --shadow-modal: 0 20px 60px rgba(11, 41, 49, 0.15);
+    
+    /* === Spacing === */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+    --space-4xl: 96px;
+    
+    /* === Transiciones === */
+    --transition-fast: 150ms ease-out;
+    --transition-base: 250ms ease-out;
+    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* === Z-index === */
+    --z-navbar: 1000;
+    --z-mobile-menu: 999;
+    --z-floating-card: 10;
+}
+
+/* ============================================
+   2. RESET Y BASE
+   ============================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px; /* Espacio para navbar fijo */
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-ink);
+    background-color: var(--color-warm-cloud);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+    font-weight: 700;
+    color: var(--color-ink);
+}
+
+p {
+    color: var(--color-slate);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color var(--transition-fast);
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Focus visible para accesibilidad */
+:focus-visible {
+    outline: 2px solid var(--color-salu-mint);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   3. UTILIDADES - BADGES
+   ============================================ */
+.salu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 6px 14px;
+    background: var(--color-mint-pale);
+    color: var(--color-teal);
+    border-radius: var(--radius-badge);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+}
+
+.salu-badge i,
+.salu-badge svg {
+    width: 14px;
+    height: 14px;
+    color: var(--color-salu-mint);
+}
+
+.salu-badge-mint {
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+}
+
+.salu-badge-mint i,
+.salu-badge-mint svg {
+    color: var(--color-midnight-teal);
+}
+
+/* ============================================
+   4. UTILIDADES - BOTONES
+   ============================================ */
+.btn-primary-salu {
+    background: var(--color-deep-teal);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-button);
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: all var(--transition-base);
+    box-shadow: 0 2px 8px rgba(18, 60, 70, 0.2);
+}
+
+.btn-primary-salu:hover {
+    background: var(--color-midnight-teal);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(18, 60, 70, 0.3);
+    color: var(--color-white);
+}
+
+.btn-primary-salu svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-outline-salu {
+    background: var(--color-white);
+    color: var(--color-deep-teal);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-button);
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: all var(--transition-base);
+}
+
+.btn-outline-salu:hover {
+    border-color: var(--color-deep-teal);
+    background: var(--color-mint-pale);
+    color: var(--color-deep-teal);
+}
+
+.btn-outline-salu svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--color-deep-teal);
+    border: none;
+    padding: 12px 20px;
+    font-weight: 500;
+    font-size: 15px;
+    border-radius: var(--radius-button);
+    transition: all var(--transition-fast);
+}
+
+.btn-ghost:hover {
+    background: var(--color-mint-pale);
+}
+
+.btn-mint {
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+    border: none;
+    border-radius: var(--radius-button);
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: all var(--transition-base);
+}
+
+.btn-mint:hover {
+    background: var(--color-mint-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 209, 181, 0.4);
+}
+
+.btn-outline-white {
+    background: transparent;
+    color: var(--color-white);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-button);
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all var(--transition-base);
+}
+
+.btn-outline-white:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--color-white);
+}
+
+.btn-lg {
+    padding: 14px 32px;
+    font-size: 16px;
+}
+
+/* ============================================
+   5. NAVBAR - CÁPSULA FLOTANTE
+   ============================================ */
+.salu-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-navbar);
+    padding: 16px 0;
+    transition: all var(--transition-slow);
+}
+
+/* Estado inicial: transparente */
+.salu-navbar .container {
+    transition: all var(--transition-slow);
+}
+
+.salu-navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xl);
+}
+
+/* Estado scroll: cápsula con glassmorphism */
+.salu-navbar.scrolled {
+    padding: 12px 0;
+}
+
+.salu-navbar.scrolled .salu-navbar-inner {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(220, 228, 226, 0.5);
+    border-radius: var(--radius-badge);
+    padding: 10px 24px;
+    box-shadow: var(--shadow-navbar);
+}
+
+/* Logo */
+.salu-navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.salu-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.salu-logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.salu-logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-deep-teal);
+    letter-spacing: 0.5px;
+}
+
+/* Menú central */
+.salu-navbar-menu {
+    display: none;
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+@media (min-width: 992px) {
+    .salu-navbar-menu {
+        display: flex;
+    }
+}
+
+.salu-navbar-link {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-charcoal);
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+}
+
+.salu-navbar-link:hover {
+    color: var(--color-deep-teal);
+    background: var(--color-mint-pale);
+}
+
+/* Acciones */
+.salu-navbar-actions {
+    display: none;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+@media (min-width: 992px) {
+    .salu-navbar-actions {
+        display: flex;
+    }
+}
+
+/* Mobile menu button */
+.salu-navbar-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background var(--transition-fast);
+}
+
+.salu-navbar-toggle:hover {
+    background: var(--color-mint-pale);
+}
+
+.salu-navbar-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-deep-teal);
+    border-radius: 2px;
+    transition: all var(--transition-base);
+}
+
+@media (min-width: 992px) {
+    .salu-navbar-toggle {
+        display: none;
+    }
+}
+
+/* Animación cuando está abierto */
+.salu-navbar-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.salu-navbar-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.salu-navbar-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* ============================================
+   6. MOBILE MENU
+   ============================================ */
+.salu-mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-mobile-menu);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+}
+
+.salu-mobile-menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.salu-mobile-menu-inner {
+    padding: 100px 24px 40px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.salu-mobile-menu-links {
+    margin-bottom: var(--space-2xl);
+}
+
+.salu-mobile-menu-links li {
+    margin-bottom: var(--space-md);
+}
+
+.salu-mobile-menu-links a {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-ink);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border-soft);
+    transition: color var(--transition-fast);
+}
+
+.salu-mobile-menu-links a:hover {
+    color: var(--color-salu-mint);
+}
+
+/* ============================================
+   7. HERO SECTION
+   ============================================ */
+.salu-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 0 80px;
+    overflow: hidden;
+}
+
+.salu-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(ellipse at 20% 30%, rgba(221, 245, 239, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(238, 249, 246, 0.5) 0%, transparent 50%),
+        linear-gradient(180deg, var(--color-warm-cloud) 0%, var(--color-cream) 100%);
+    z-index: -1;
+}
+
+.salu-hero-content {
+    max-width: 600px;
+}
+
+.salu-hero-title {
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-lg);
+    color: var(--color-ink);
+}
+
+.salu-text-gradient {
+    background: linear-gradient(135deg, var(--color-teal) 0%, var(--color-salu-mint) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.salu-hero-subtitle {
+    font-size: 18px;
+    color: var(--color-slate);
+    margin-bottom: var(--space-xl);
+    line-height: 1.7;
+}
+
+.salu-hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+}
+
+/* Social proof en hero */
+.salu-hero-social-proof {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.salu-avatars {
+    display: flex;
+}
+
+.salu-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-white);
+    border: 2px solid var(--color-white);
+    margin-left: -8px;
+}
+
+.salu-avatar:first-child {
+    margin-left: 0;
+}
+
+.salu-social-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.salu-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.salu-stars svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.salu-social-text span {
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+/* ============================================
+   8. HERO MOCKUP - DASHBOARD
+   ============================================ */
+.salu-hero-mockup {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.salu-mockup-window {
+    background: var(--color-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-modal);
+    overflow: hidden;
+    border: 1px solid var(--color-border-soft);
+}
+
+.salu-mockup-header {
+    background: var(--color-warm-cloud);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-soft);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.salu-mockup-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.salu-mockup-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.salu-mockup-dots span:nth-child(1) { background: #FF5F57; }
+.salu-mockup-dots span:nth-child(2) { background: #FFBD2E; }
+.salu-mockup-dots span:nth-child(3) { background: #28CA42; }
+
+.salu-mockup-title {
+    font-size: 12px;
+    color: var(--color-muted);
+    font-weight: 500;
+}
+
+.salu-mockup-body {
+    display: flex;
+    height: 320px;
+}
+
+.salu-mockup-sidebar {
+    width: 60px;
+    background: var(--color-deep-teal);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.salu-mockup-logo-small {
+    width: 32px;
+    height: 32px;
+    background: var(--color-salu-mint);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-midnight-teal);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: var(--space-md);
+}
+
+.salu-mockup-nav-item {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all var(--transition-fast);
+}
+
+.salu-mockup-nav-item.active {
+    background: var(--color-teal-dark);
+    color: var(--color-salu-mint);
+}
+
+.salu-mockup-nav-item svg {
+    width: 18px;
+    height: 18px;
+}
+
+.salu-mockup-content {
+    flex: 1;
+    padding: var(--space-lg);
+}
+
+.salu-mockup-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.salu-mockup-kpi {
+    background: var(--color-warm-cloud);
+    padding: var(--space-md);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.salu-mockup-kpi-label {
+    font-size: 11px;
+    color: var(--color-muted);
+    margin-bottom: 4px;
+}
+
+.salu-mockup-kpi-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-deep-teal);
+}
+
+.salu-mockup-appointments {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.salu-mockup-appointment {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--color-white);
+    border: 1px solid var(--color-border-soft);
+    border-radius: 10px;
+}
+
+.salu-mockup-appointment-time {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-deep-teal);
+    min-width: 50px;
+}
+
+.salu-mockup-appointment-info {
+    flex: 1;
+}
+
+.salu-mockup-appointment-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+}
+
+.salu-mockup-appointment-type {
+    font-size: 11px;
+    color: var(--color-muted);
+}
+
+.salu-mockup-appointment-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.salu-mockup-appointment-status.confirmed {
+    background: var(--color-salu-mint);
+}
+
+.salu-mockup-appointment-status.pending {
+    background: var(--color-warning);
+}
+
+/* Floating cards */
+.salu-floating-card {
+    position: absolute;
+    background: var(--color-white);
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-card-hover);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    animation: float 4s ease-in-out infinite;
+    z-index: var(--z-floating-card);
+}
+
+.salu-floating-card svg {
+    width: 20px;
+    height: 20px;
+}
+
+.salu-floating-card-1 {
+    top: 20%;
+    right: -30px;
+    animation-delay: 0.5s;
+}
+
+.salu-floating-card-1 svg {
+    color: var(--color-salu-mint);
+}
+
+.salu-floating-card-2 {
+    bottom: 10%;
+    left: -20px;
+    animation-delay: 1s;
+}
+
+.salu-floating-card-2 svg {
+    color: var(--color-info);
+}
+
+.salu-floating-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+}
+
+.salu-floating-subtitle {
+    font-size: 11px;
+    color: var(--color-muted);
+}
+
+/* ============================================
+   9. SECCIONES - HEADER COMÚN
+   ============================================ */
+.salu-section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto var(--space-3xl);
+}
+
+.salu-section-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    color: var(--color-ink);
+}
+
+.salu-section-subtitle {
+    font-size: 17px;
+    color: var(--color-slate);
+    line-height: 1.7;
+}
+
+/* ============================================
+   10. LOGOS - SOCIAL PROOF
+   ============================================ */
+.salu-logos {
+    padding: var(--space-3xl) 0;
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.salu-logos-title {
+    text-align: center;
+    font-size: 14px;
+    color: var(--color-muted);
+    margin-bottom: var(--space-xl);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.salu-logos-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2xl);
+    align-items: center;
+}
+
+.salu-logo-item {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-muted);
+    opacity: 0.6;
+    transition: opacity var(--transition-base);
+    cursor: default;
+}
+
+.salu-logo-item:hover {
+    opacity: 1;
+    color: var(--color-deep-teal);
+}
+
+/* ============================================
+   11. PROBLEMA
+   ============================================ */
+.salu-problem {
+    padding: var(--space-4xl) 0;
+}
+
+.salu-problem-card {
+    background: var(--color-white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-soft);
+    height: 100%;
+    transition: all var(--transition-base);
+}
+
+.salu-problem-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-4px);
+}
+
+.salu-problem-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--color-error-soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+}
+
+.salu-problem-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-error);
+}
+
+.salu-problem-card h3 {
+    font-size: 18px;
+    margin-bottom: var(--space-sm);
+}
+
+.salu-problem-card p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ============================================
+   12. SOLUCIÓN
+   ============================================ */
+.salu-solution {
+    padding: var(--space-4xl) 0;
+    background: var(--color-white);
+}
+
+.salu-pillar-card {
+    background: var(--color-warm-cloud);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    height: 100%;
+    position: relative;
+    transition: all var(--transition-base);
+}
+
+.salu-pillar-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-4px);
+}
+
+.salu-pillar-card.featured {
+    background: linear-gradient(135deg, var(--color-mint-pale) 0%, var(--color-warm-cloud) 100%);
+    border: 2px solid var(--color-salu-mint);
+}
+
+.salu-pillar-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+    padding: 4px 16px;
+    border-radius: var(--radius-badge);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.salu-pillar-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--color-white);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.salu-pillar-icon svg {
+    width: 28px;
+    height: 28px;
+    color: var(--color-teal);
+}
+
+.salu-pillar-card h3 {
+    font-size: 20px;
+    margin-bottom: var(--space-md);
+}
+
+.salu-pillar-card > p {
+    font-size: 14px;
+    margin-bottom: var(--space-lg);
+}
+
+.salu-pillar-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.salu-pillar-features li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 13px;
+    color: var(--color-charcoal);
+}
+
+.salu-pillar-features svg {
+    width: 14px;
+    height: 14px;
+    color: var(--color-salu-mint);
+}
+
+/* ============================================
+   13. CARACTERÍSTICAS
+   ============================================ */
+.salu-features {
+    padding: var(--space-4xl) 0;
+}
+
+.salu-feature-card {
+    background: var(--color-white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-soft);
+    height: 100%;
+    transition: all var(--transition-base);
+}
+
+.salu-feature-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+    border-color: var(--color-salu-mint);
+}
+
+.salu-feature-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--color-mint-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+}
+
+.salu-feature-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-teal);
+}
+
+.salu-feature-card h3 {
+    font-size: 18px;
+    margin-bottom: var(--space-sm);
+}
+
+.salu-feature-card p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.salu-features-cta {
+    text-align: center;
+    margin-top: var(--space-2xl);
+}
+
+/* ============================================
+   14. BENEFICIOS
+   ============================================ */
+.salu-benefits {
+    padding: var(--space-4xl) 0;
+    background: var(--color-white);
+}
+
+.salu-benefits-visual {
+    position: relative;
+}
+
+.salu-benefit-graph {
+    background: var(--color-warm-cloud);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-soft);
+}
+
+.salu-graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.salu-graph-header span {
+    font-size: 14px;
+    color: var(--color-slate);
+}
+
+.salu-graph-header strong {
+    font-size: 24px;
+    color: var(--color-salu-mint);
+}
+
+.salu-graph-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.salu-graph-bar-label {
+    font-size: 13px;
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-sm);
+}
+
+.salu-graph-bar-track {
+    height: 8px;
+    background: var(--color-border-soft);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.salu-graph-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-teal) 0%, var(--color-salu-mint) 100%);
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
+
+.salu-benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.salu-benefit-item {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.salu-benefit-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--color-mint-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.salu-benefit-icon svg {
+    width: 22px;
+    height: 22px;
+    color: var(--color-teal);
+}
+
+.salu-benefit-item h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.salu-benefit-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ============================================
+   15. ESPECIALIDADES
+   ============================================ */
+.salu-specialties {
+    padding: var(--space-4xl) 0;
+}
+
+.salu-specialty-card {
+    background: var(--color-white);
+    padding: var(--space-lg);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-soft);
+    text-align: center;
+    transition: all var(--transition-base);
+    height: 100%;
+}
+
+.salu-specialty-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-4px);
+    border-color: var(--color-salu-mint);
+}
+
+.salu-specialty-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--color-mint-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-md);
+}
+
+.salu-specialty-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-teal);
+}
+
+.salu-specialty-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.salu-specialties-note {
+    text-align: center;
+    margin-top: var(--space-2xl);
+    font-size: 14px;
+    color: var(--color-slate);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.salu-specialties-note svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-salu-mint);
+}
+
+/* ============================================
+   16. SEGURIDAD
+   ============================================ */
+.salu-security {
+    padding: var(--space-4xl) 0;
+    background: var(--color-white);
+}
+
+.salu-security-card {
+    background: var(--color-warm-cloud);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    height: 100%;
+}
+
+.salu-security-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--color-deep-teal);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+}
+
+.salu-security-icon svg {
+    width: 26px;
+    height: 26px;
+    color: var(--color-salu-mint);
+}
+
+.salu-security-card h3 {
+    font-size: 18px;
+    margin-bottom: var(--space-lg);
+}
+
+.salu-security-card ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.salu-security-card li {
+    font-size: 14px;
+    color: var(--color-charcoal);
+    padding-left: 24px;
+    position: relative;
+}
+
+.salu-security-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    background: var(--color-salu-mint);
+    border-radius: 50%;
+}
+
+.salu-security-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-2xl);
+}
+
+.salu-compliance-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--color-success-soft);
+    padding: 10px 20px;
+    border-radius: var(--radius-badge);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-success);
+}
+
+.salu-compliance-badge svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================
+   17. TESTIMONIOS
+   ============================================ */
+.salu-testimonials {
+    padding: var(--space-4xl) 0;
+}
+
+.salu-testimonial-card {
+    background: var(--color-white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-soft);
+    height: 100%;
+    transition: all var(--transition-base);
+}
+
+.salu-testimonial-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-4px);
+}
+
+.salu-testimonial-stars {
+    display: flex;
+    gap: 2px;
+    margin-bottom: var(--space-md);
+}
+
+.salu-testimonial-stars svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.salu-testimonial-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-lg);
+    font-style: italic;
+}
+
+.salu-testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.salu-testimonial-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-white);
+}
+
+.salu-testimonial-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-ink);
+}
+
+.salu-testimonial-role {
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.salu-testimonials-rating {
+    margin-top: var(--space-2xl);
+    text-align: center;
+}
+
+.salu-rating-large {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.salu-rating-number {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--color-deep-teal);
+}
+
+.salu-rating-stars {
+    display: flex;
+    gap: 4px;
+}
+
+.salu-rating-stars svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.salu-rating-count {
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+/* ============================================
+   18. PRECIOS
+   ============================================ */
+.salu-pricing {
+    padding: var(--space-4xl) 0;
+    background: var(--color-white);
+}
+
+.salu-pricing-card {
+    background: var(--color-warm-cloud);
+    padding: var(--space-xl);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-soft);
+    height: 100%;
+    position: relative;
+    transition: all var(--transition-base);
+}
+
+.salu-pricing-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-4px);
+}
+
+.salu-pricing-card.featured {
+    background: var(--color-white);
+    border: 2px solid var(--color-salu-mint);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.salu-pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+    padding: 4px 16px;
+    border-radius: var(--radius-badge);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.salu-pricing-header h3 {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.salu-pricing-header p {
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.salu-pricing-price {
+    margin: var(--space-xl) 0;
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.salu-pricing-currency {
+    font-size: 24px;
+    color: var(--color-slate);
+}
+
+.salu-pricing-amount {
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--color-ink);
+}
+
+.salu-pricing-period {
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+.salu-pricing-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.salu-pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 14px;
+    color: var(--color-charcoal);
+}
+
+.salu-pricing-features svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-salu-mint);
+}
+
+/* ============================================
+   19. FAQ
+   ============================================ */
+.salu-faq {
+    padding: var(--space-4xl) 0;
+}
+
+.salu-faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.salu-faq-item {
+    background: var(--color-white);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-card);
+    margin-bottom: var(--space-md);
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.salu-faq-item:hover {
+    border-color: var(--color-border);
+}
+
+.salu-faq-item.active {
+    border-color: var(--color-salu-mint);
+    box-shadow: var(--shadow-card);
+}
+
+.salu-faq-question {
+    width: 100%;
+    padding: var(--space-lg);
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    cursor: pointer;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-ink);
+    transition: color var(--transition-fast);
+}
+
+.salu-faq-question:hover {
+    color: var(--color-teal);
+}
+
+.salu-faq-question svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-muted);
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
+}
+
+.salu-faq-item.active .salu-faq-question svg {
+    transform: rotate(180deg);
+    color: var(--color-salu-mint);
+}
+
+.salu-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-slow);
+}
+
+.salu-faq-item.active .salu-faq-answer {
+    max-height: 300px;
+}
+
+.salu-faq-answer p {
+    padding: 0 var(--space-lg) var(--space-lg);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-slate);
+    margin: 0;
+}
+
+.salu-faq-cta {
+    text-align: center;
+    margin-top: var(--space-2xl);
+}
+
+.salu-faq-cta p {
+    margin-bottom: var(--space-md);
+    color: var(--color-slate);
+}
+
+/* ============================================
+   20. CTA FINAL
+   ============================================ */
+.salu-cta-final {
+    padding: var(--space-4xl) 0;
+    background: linear-gradient(135deg, var(--color-deep-teal) 0%, var(--color-midnight-teal) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.salu-cta-final::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(79, 209, 181, 0.1) 0%, transparent 70%);
+}
+
+.salu-cta-final-content {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.salu-cta-final-content h2 {
+    font-size: 36px;
+    color: var(--color-white);
+    margin-bottom: var(--space-md);
+}
+
+.salu-cta-final-content > p {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: var(--space-2xl);
+}
+
+.salu-cta-final-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.salu-cta-final-note {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================
+   21. FOOTER
+   ============================================ */
+.salu-footer {
+    background: var(--color-midnight-teal);
+    padding: var(--space-4xl) 0 var(--space-xl);
+}
+
+.salu-footer .salu-logo-text {
+    color: var(--color-white);
+}
+
+.salu-footer-tagline {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin: var(--space-md) 0;
+}
+
+.salu-footer-social {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.salu-footer-social a {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all var(--transition-fast);
+}
+
+.salu-footer-social a:hover {
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+}
+
+.salu-footer-social svg {
+    width: 18px;
+    height: 18px;
+}
+
+.salu-footer h5 {
+    color: var(--color-white);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--space-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.salu-footer ul li {
+    margin-bottom: var(--space-sm);
+}
+
+.salu-footer ul a {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    transition: color var(--transition-fast);
+}
+
+.salu-footer ul a:hover {
+    color: var(--color-salu-mint);
+}
+
+.salu-footer-bottom {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.salu-footer-bottom p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.salu-footer-location {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.salu-footer-location svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ============================================
+   22. ANIMACIONES DE ENTRADA (Scroll Reveal)
+   ============================================ */
+.salu-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.salu-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Delays escalonados para grids */
+.salu-reveal-delay-1 { transition-delay: 0.1s; }
+.salu-reveal-delay-2 { transition-delay: 0.2s; }
+.salu-reveal-delay-3 { transition-delay: 0.3s; }
+.salu-reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================
+   23. RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .salu-hero-title {
+        font-size: 36px;
+    }
+    
+    .salu-section-title {
+        font-size: 30px;
+    }
+    
+    .salu-hero-mockup {
+        margin-top: var(--space-2xl);
+    }
+    
+    .salu-floating-card-1 {
+        right: 0;
+    }
+    
+    .salu-floating-card-2 {
+        left: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    .salu-hero {
+        padding: 100px 0 60px;
+    }
+    
+    .salu-hero-title {
+        font-size: 30px;
+    }
+    
+    .salu-section-title {
+        font-size: 26px;
+    }
+    
+    .salu-section-subtitle {
+        font-size: 15px;
+    }
+    
+    .salu-hero-ctas {
+        flex-direction: column;
+    }
+    
+    .salu-hero-ctas .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .salu-hero-social-proof {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+    }
+    
+    .salu-pricing-card {
+        margin-bottom: var(--space-md);
+    }
+    
+    .salu-cta-final-content h2 {
+        font-size: 28px;
+    }
+    
+    .salu-cta-final-buttons {
+        flex-direction: column;
+    }
+    
+    .salu-cta-final-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .salu-footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ============================================
+   24. ACCESIBILIDAD - REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .salu-hero-mockup {
+        animation: none;
+    }
+    
+    .salu-floating-card {
+        animation: none;
+    }
+}
+
+/* ============================================
+   25. UTILIDADES ADICIONALES
+   ============================================ */
+.text-center {
+    text-align: center;
+}
+
+.mt-2xl {
+    margin-top: var(--space-2xl);
+}
+
+.mb-2xl {
+    margin-bottom: var(--space-2xl);
+}
