@@ -1,36 +1,37 @@
 /**
  * SALUVERA - Landing Page Styles
- * 
+ *
  * Design System: Deep Teal + Mint + Warm Sand
- * Tipografía: Inter
+ * Tipografia: Inter
  * Regla: 60/30/10 (neutros/teal/acento)
- * 
+ * Incluye: Dark Mode hibrido + Navbar corregido
+ *
  * @author SALUVERA
- * @version 1.0.0
+ * @version 2.3.0
  */
 
 /* ============================================
    1. TOKENS DEL DESIGN SYSTEM
    ============================================ */
 :root {
-    /* === Primary — Deep Teal === */
+    /* === Primarios - Deep Teal === */
     --color-deep-teal: #123C46;
     --color-midnight-teal: #0B2931;
     --color-teal-dark: #164A55;
     --color-teal: #1F5964;
-    
-    /* === Accent — Mint === */
+
+    /* === Acento - Mint === */
     --color-salu-mint: #4FD1B5;
     --color-mint-dark: #32B99D;
     --color-mint-soft: #DDF5EF;
     --color-mint-pale: #EEF9F6;
-    
-    /* === Warm Sand === */
+
+    /* === Arena Calida === */
     --color-warm-cloud: #F7F8F6;
     --color-warm-sand: #F2EFE8;
     --color-cream: #FAF9F5;
     --color-soft-stone: #E3E7E4;
-    
+
     /* === Neutrales === */
     --color-ink: #17252A;
     --color-charcoal: #243238;
@@ -39,8 +40,8 @@
     --color-border: #DCE4E2;
     --color-border-soft: #E9EEEC;
     --color-white: #FFFFFF;
-    
-    /* === Semánticos === */
+
+    /* === Semanticos === */
     --color-success: #36A269;
     --color-success-soft: #E3F4EB;
     --color-warning: #D99A32;
@@ -51,24 +52,24 @@
     --color-info-soft: #E8F0F8;
     --color-purple: #8B70B8;
     --color-purple-soft: #F0EBF7;
-    
-    /* === Tipografía === */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    
+
+    /* === Tipografia === */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
     /* === Border Radius === */
     --radius-button: 10px;
     --radius-input: 10px;
     --radius-card: 14px;
     --radius-modal: 18px;
     --radius-badge: 999px;
-    
+
     /* === Sombras === */
     --shadow-card: 0 1px 3px rgba(18, 60, 70, 0.06), 0 8px 24px rgba(18, 60, 70, 0.04);
     --shadow-card-hover: 0 4px 12px rgba(18, 60, 70, 0.08), 0 12px 32px rgba(18, 60, 70, 0.06);
-    --shadow-navbar: 0 4px 20px rgba(18, 60, 70, 0.08);
+    --shadow-navbar: 0 4px 24px rgba(18, 60, 70, 0.10);
     --shadow-modal: 0 20px 60px rgba(11, 41, 49, 0.15);
-    
-    /* === Spacing === */
+
+    /* === Espaciado === */
     --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
@@ -77,16 +78,85 @@
     --space-2xl: 48px;
     --space-3xl: 64px;
     --space-4xl: 96px;
-    
+
     /* === Transiciones === */
     --transition-fast: 150ms ease-out;
     --transition-base: 250ms ease-out;
-    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-    
+    --transition-slow: 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-navbar: 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+
     /* === Z-index === */
+    --z-skip-link: 9999;
     --z-navbar: 1000;
     --z-mobile-menu: 999;
+    --z-scroll-top: 900;
     --z-floating-card: 10;
+}
+
+/* ============================================
+   1.1 DARK MODE - TOKENS
+   ============================================ */
+[data-theme="dark"] {
+    --color-deep-teal: #123C46;
+    --color-midnight-teal: #081317;
+    --color-teal-dark: #153038;
+    --color-teal: #1F5964;
+
+    --color-salu-mint: #4FD1B5;
+    --color-mint-dark: #32B99D;
+    --color-mint-soft: #173D38;
+    --color-mint-pale: #0F2A26;
+
+    --color-warm-cloud: #0B171B;
+    --color-warm-sand: #102329;
+    --color-cream: #0E1D23;
+    --color-soft-stone: #1A3540;
+
+    --color-ink: #F1F7F5;
+    --color-charcoal: #B4C6C6;
+    --color-slate: #82999B;
+    --color-muted: #6B8285;
+    --color-border: #24434A;
+    --color-border-soft: #1A3540;
+    --color-white: #102329;
+
+    --color-success: #4ADE80;
+    --color-success-soft: #14331F;
+    --color-warning: #FBBF24;
+    --color-warning-soft: #3A2E0F;
+    --color-error: #F87171;
+    --color-error-soft: #3A1515;
+    --color-info: #60A5FA;
+    --color-info-soft: #152638;
+    --color-purple: #A78BFA;
+    --color-purple-soft: #261F3A;
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.3);
+    --shadow-navbar: 0 4px 24px rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+}
+
+/* Transicion suave entre temas */
+body,
+.salu-navbar.scrolled .salu-navbar-inner,
+.salu-navbar-inner,
+.salu-problem-card,
+.salu-pillar-card,
+.salu-feature-card,
+.salu-specialty-card,
+.salu-security-card,
+.salu-testimonial-card,
+.salu-pricing-card,
+.salu-faq-item,
+.salu-footer {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* ============================================
@@ -95,14 +165,19 @@
 *,
 *::before,
 *::after {
+    box-sizing: border-box;
+}
+
+* {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 100px; /* Espacio para navbar fijo */
+    scroll-padding-top: 100px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -113,37 +188,93 @@ body {
     background-color: var(--color-warm-cloud);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
     font-weight: 700;
     color: var(--color-ink);
+    text-wrap: balance;
 }
 
 p {
     color: var(--color-slate);
+    text-wrap: pretty;
 }
 
 a {
     text-decoration: none;
+    text-decoration-skip-ink: auto;
     color: inherit;
     transition: color var(--transition-fast);
 }
 
-ul {
+ul, ol {
     list-style: none;
 }
 
-img {
+img, svg, video {
     max-width: 100%;
     height: auto;
+    display: block;
 }
 
-/* Focus visible para accesibilidad */
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
 :focus-visible {
     outline: 2px solid var(--color-salu-mint);
     outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+input,
+textarea,
+select,
+button {
+    accent-color: var(--color-salu-mint);
+}
+
+/* ============================================
+   2.1 UTILIDADES DE ACCESIBILIDAD
+   ============================================ */
+.salu-skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-deep-teal);
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border-radius: var(--radius-button);
+    font-weight: 600;
+    z-index: var(--z-skip-link);
+    transition: top var(--transition-base);
+}
+
+.salu-skip-link:focus {
+    top: 16px;
+    outline: 2px solid var(--color-salu-mint);
+    outline-offset: 2px;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
 }
 
 /* ============================================
@@ -162,11 +293,11 @@ img {
     margin-bottom: var(--space-md);
 }
 
-.salu-badge i,
 .salu-badge svg {
     width: 14px;
     height: 14px;
     color: var(--color-salu-mint);
+    flex-shrink: 0;
 }
 
 .salu-badge-mint {
@@ -174,7 +305,6 @@ img {
     color: var(--color-midnight-teal);
 }
 
-.salu-badge-mint i,
 .salu-badge-mint svg {
     color: var(--color-midnight-teal);
 }
@@ -182,9 +312,21 @@ img {
 /* ============================================
    4. UTILIDADES - BOTONES
    ============================================ */
+.btn-primary-salu,
+.btn-outline-salu,
+.btn-ghost,
+.btn-mint,
+.btn-outline-white {
+    font-family: var(--font-family);
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    user-select: none;
+}
+
 .btn-primary-salu {
     background: var(--color-deep-teal);
-    color: var(--color-white);
+    color: #FFFFFF;
     border: none;
     border-radius: var(--radius-button);
     padding: 12px 24px;
@@ -192,6 +334,7 @@ img {
     font-size: 15px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-sm);
     transition: all var(--transition-base);
     box-shadow: 0 2px 8px rgba(18, 60, 70, 0.2);
@@ -201,12 +344,17 @@ img {
     background: var(--color-midnight-teal);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(18, 60, 70, 0.3);
-    color: var(--color-white);
+    color: #FFFFFF;
+}
+
+.btn-primary-salu:active {
+    transform: translateY(0);
 }
 
 .btn-primary-salu svg {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
 }
 
 .btn-outline-salu {
@@ -219,6 +367,7 @@ img {
     font-size: 15px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-sm);
     transition: all var(--transition-base);
 }
@@ -232,6 +381,7 @@ img {
 .btn-outline-salu svg {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
 }
 
 .btn-ghost {
@@ -259,6 +409,7 @@ img {
     font-size: 15px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-sm);
     transition: all var(--transition-base);
 }
@@ -269,21 +420,28 @@ img {
     box-shadow: 0 4px 12px rgba(79, 209, 181, 0.4);
 }
 
+.btn-mint:active {
+    transform: translateY(0);
+}
+
 .btn-outline-white {
     background: transparent;
-    color: var(--color-white);
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    color: #FFFFFF;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
     border-radius: var(--radius-button);
     padding: 12px 24px;
     font-weight: 600;
     font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all var(--transition-base);
 }
 
 .btn-outline-white:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: var(--color-white);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #FFFFFF;
 }
 
 .btn-lg {
@@ -292,7 +450,7 @@ img {
 }
 
 /* ============================================
-   5. NAVBAR - CÁPSULA FLOTANTE
+   5. NAVBAR - CAPSULA FLOTANTE (CORREGIDO)
    ============================================ */
 .salu-navbar {
     position: fixed;
@@ -300,13 +458,12 @@ img {
     left: 0;
     right: 0;
     z-index: var(--z-navbar);
-    padding: 16px 0;
-    transition: all var(--transition-slow);
+    padding: 20px 0;
+    transition: padding var(--transition-navbar);
 }
 
-/* Estado inicial: transparente */
 .salu-navbar .container {
-    transition: all var(--transition-slow);
+    transition: all var(--transition-navbar);
 }
 
 .salu-navbar-inner {
@@ -314,24 +471,30 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: var(--space-xl);
+    transition: all var(--transition-navbar);
 }
 
-/* Estado scroll: cápsula con glassmorphism */
 .salu-navbar.scrolled {
     padding: 12px 0;
 }
 
 .salu-navbar.scrolled .salu-navbar-inner {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(220, 228, 226, 0.5);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(220, 228, 226, 0.4);
     border-radius: var(--radius-badge);
-    padding: 10px 24px;
+    padding: 12px 28px;
     box-shadow: var(--shadow-navbar);
+    transition: all var(--transition-navbar);
 }
 
-/* Logo */
+@supports not (backdrop-filter: blur(16px)) {
+    .salu-navbar.scrolled .salu-navbar-inner {
+        background: rgba(255, 255, 255, 0.97);
+    }
+}
+
 .salu-navbar-brand {
     display: flex;
     align-items: center;
@@ -349,18 +512,24 @@ img {
     justify-content: center;
 }
 
+.salu-logo-icon svg {
+    display: block;
+}
+
 .salu-logo-text {
     font-size: 18px;
     font-weight: 700;
     color: var(--color-deep-teal);
     letter-spacing: 0.5px;
+    line-height: 1;
 }
 
-/* Menú central */
 .salu-navbar-menu {
     display: none;
     align-items: center;
     gap: var(--space-lg);
+    margin: 0;
+    padding: 0;
 }
 
 @media (min-width: 992px) {
@@ -373,9 +542,12 @@ img {
     font-size: 15px;
     font-weight: 500;
     color: var(--color-charcoal);
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: all var(--transition-fast);
+    padding: 10px 16px;
+    border-radius: var(--radius-badge);
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
 }
 
 .salu-navbar-link:hover {
@@ -383,7 +555,6 @@ img {
     background: var(--color-mint-pale);
 }
 
-/* Acciones */
 .salu-navbar-actions {
     display: none;
     align-items: center;
@@ -396,7 +567,6 @@ img {
     }
 }
 
-/* Mobile menu button */
 .salu-navbar-toggle {
     display: flex;
     flex-direction: column;
@@ -420,6 +590,7 @@ img {
     background: var(--color-deep-teal);
     border-radius: 2px;
     transition: all var(--transition-base);
+    transform-origin: center;
 }
 
 @media (min-width: 992px) {
@@ -428,7 +599,6 @@ img {
     }
 }
 
-/* Animación cuando está abierto */
 .salu-navbar-toggle.active span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
 }
@@ -442,7 +612,7 @@ img {
 }
 
 /* ============================================
-   6. MOBILE MENU
+   6. MENU MOVIL
    ============================================ */
 .salu-mobile-menu {
     position: fixed;
@@ -457,11 +627,18 @@ img {
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-base);
+    overflow-y: auto;
 }
 
 .salu-mobile-menu.active {
     opacity: 1;
     visibility: visible;
+}
+
+@supports not (backdrop-filter: blur(20px)) {
+    .salu-mobile-menu {
+        background: rgba(255, 255, 255, 0.99);
+    }
 }
 
 .salu-mobile-menu-inner {
@@ -488,19 +665,128 @@ img {
     transition: color var(--transition-fast);
 }
 
-.salu-mobile-menu-links a:hover {
+.salu-mobile-menu-links a:hover,
+.salu-mobile-menu-links a:focus {
     color: var(--color-salu-mint);
 }
 
 /* ============================================
-   7. HERO SECTION
+   6.1 BOTON DE CAMBIO DE TEMA
+   ============================================ */
+.salu-navbar-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+@media (min-width: 992px) {
+    .salu-navbar-mobile-actions .salu-theme-toggle {
+        display: none;
+    }
+}
+
+.salu-theme-toggle {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    background: transparent;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-badge);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: all var(--transition-base);
+    flex-shrink: 0;
+}
+
+.salu-theme-toggle:hover {
+    border-color: var(--color-salu-mint);
+    box-shadow: 0 0 0 3px rgba(79, 209, 181, 0.15);
+}
+
+.salu-theme-toggle:focus-visible {
+    outline: 2px solid var(--color-salu-mint);
+    outline-offset: 2px;
+}
+
+.salu-theme-toggle-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.salu-theme-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--color-deep-teal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-base), background-color var(--transition-base);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    will-change: transform;
+}
+
+[data-theme="dark"] .salu-theme-toggle-thumb {
+    transform: translateX(20px);
+    background: var(--color-salu-mint);
+}
+
+.salu-theme-toggle-thumb svg {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    display: block;
+}
+
+.salu-theme-icon-sun {
+    color: #FFFFFF;
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+.salu-theme-icon-moon {
+    color: var(--color-midnight-teal);
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+[data-theme="dark"] .salu-theme-icon-sun {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+[data-theme="dark"] .salu-theme-icon-moon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+.salu-theme-toggle:active .salu-theme-toggle-thumb {
+    transform: scale(0.9);
+}
+
+[data-theme="dark"] .salu-theme-toggle:active .salu-theme-toggle-thumb {
+    transform: translateX(20px) scale(0.9);
+}
+
+/* ============================================
+   7. HERO SECTION (CORREGIDO)
    ============================================ */
 .salu-hero {
     position: relative;
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: 120px 0 80px;
+    padding: 140px 0 80px;
     overflow: hidden;
 }
 
@@ -510,7 +796,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
         radial-gradient(ellipse at 20% 30%, rgba(221, 245, 239, 0.4) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 70%, rgba(238, 249, 246, 0.5) 0%, transparent 50%),
         linear-gradient(180deg, var(--color-warm-cloud) 0%, var(--color-cream) 100%);
@@ -532,8 +818,9 @@ img {
 .salu-text-gradient {
     background: linear-gradient(135deg, var(--color-teal) 0%, var(--color-salu-mint) 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .salu-hero-subtitle {
@@ -550,7 +837,6 @@ img {
     margin-bottom: var(--space-2xl);
 }
 
-/* Social proof en hero */
 .salu-hero-social-proof {
     display: flex;
     align-items: center;
@@ -570,8 +856,8 @@ img {
     justify-content: center;
     font-size: 12px;
     font-weight: 600;
-    color: var(--color-white);
-    border: 2px solid var(--color-white);
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
     margin-left: -8px;
 }
 
@@ -595,6 +881,7 @@ img {
     height: 14px;
     fill: var(--color-warning);
     color: var(--color-warning);
+    display: block;
 }
 
 .salu-social-text span {
@@ -608,6 +895,7 @@ img {
 .salu-hero-mockup {
     position: relative;
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
 }
 
 @keyframes float {
@@ -701,11 +989,13 @@ img {
 .salu-mockup-nav-item svg {
     width: 18px;
     height: 18px;
+    display: block;
 }
 
 .salu-mockup-content {
     flex: 1;
     padding: var(--space-lg);
+    background: var(--color-warm-cloud);
 }
 
 .salu-mockup-kpis {
@@ -716,7 +1006,7 @@ img {
 }
 
 .salu-mockup-kpi {
-    background: var(--color-warm-cloud);
+    background: var(--color-white);
     padding: var(--space-md);
     border-radius: 10px;
     text-align: center;
@@ -776,6 +1066,7 @@ img {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .salu-mockup-appointment-status.confirmed {
@@ -786,7 +1077,6 @@ img {
     background: var(--color-warning);
 }
 
-/* Floating cards */
 .salu-floating-card {
     position: absolute;
     background: var(--color-white);
@@ -798,11 +1088,14 @@ img {
     gap: var(--space-sm);
     animation: float 4s ease-in-out infinite;
     z-index: var(--z-floating-card);
+    will-change: transform;
 }
 
 .salu-floating-card svg {
     width: 20px;
     height: 20px;
+    display: block;
+    flex-shrink: 0;
 }
 
 .salu-floating-card-1 {
@@ -837,7 +1130,7 @@ img {
 }
 
 /* ============================================
-   9. SECCIONES - HEADER COMÚN
+   9. SECCIONES - ENCABEZADO COMUN
    ============================================ */
 .salu-section-header {
     text-align: center;
@@ -859,7 +1152,7 @@ img {
 }
 
 /* ============================================
-   10. LOGOS - SOCIAL PROOF
+   10. LOGOS - PRUEBA SOCIAL
    ============================================ */
 .salu-logos {
     padding: var(--space-3xl) 0;
@@ -891,7 +1184,7 @@ img {
     font-weight: 600;
     color: var(--color-muted);
     opacity: 0.6;
-    transition: opacity var(--transition-base);
+    transition: opacity var(--transition-base), color var(--transition-base);
     cursor: default;
 }
 
@@ -936,6 +1229,7 @@ img {
     width: 24px;
     height: 24px;
     color: var(--color-error);
+    display: block;
 }
 
 .salu-problem-card h3 {
@@ -949,7 +1243,7 @@ img {
 }
 
 /* ============================================
-   12. SOLUCIÓN
+   12. SOLUCION
    ============================================ */
 .salu-solution {
     padding: var(--space-4xl) 0;
@@ -1005,6 +1299,7 @@ img {
     width: 28px;
     height: 28px;
     color: var(--color-teal);
+    display: block;
 }
 
 .salu-pillar-card h3 {
@@ -1035,10 +1330,12 @@ img {
     width: 14px;
     height: 14px;
     color: var(--color-salu-mint);
+    flex-shrink: 0;
+    display: block;
 }
 
 /* ============================================
-   13. CARACTERÍSTICAS
+   13. CARACTERISTICAS
    ============================================ */
 .salu-features {
     padding: var(--space-4xl) 0;
@@ -1074,6 +1371,7 @@ img {
     width: 24px;
     height: 24px;
     color: var(--color-teal);
+    display: block;
 }
 
 .salu-feature-card h3 {
@@ -1151,6 +1449,7 @@ img {
     background: linear-gradient(90deg, var(--color-teal) 0%, var(--color-salu-mint) 100%);
     border-radius: 4px;
     transition: width 1s ease-out;
+    will-change: width;
 }
 
 .salu-benefits-list {
@@ -1179,11 +1478,13 @@ img {
     width: 22px;
     height: 22px;
     color: var(--color-teal);
+    display: block;
 }
 
-.salu-benefit-item h4 {
+.salu-benefit-item h3 {
     font-size: 16px;
     margin-bottom: 4px;
+    font-weight: 600;
 }
 
 .salu-benefit-item p {
@@ -1229,9 +1530,10 @@ img {
     width: 24px;
     height: 24px;
     color: var(--color-teal);
+    display: block;
 }
 
-.salu-specialty-card h4 {
+.salu-specialty-card h3 {
     font-size: 14px;
     font-weight: 600;
     margin: 0;
@@ -1252,6 +1554,7 @@ img {
     width: 16px;
     height: 16px;
     color: var(--color-salu-mint);
+    display: block;
 }
 
 /* ============================================
@@ -1284,6 +1587,7 @@ img {
     width: 26px;
     height: 26px;
     color: var(--color-salu-mint);
+    display: block;
 }
 
 .salu-security-card h3 {
@@ -1338,6 +1642,8 @@ img {
 .salu-compliance-badge svg {
     width: 16px;
     height: 16px;
+    display: block;
+    flex-shrink: 0;
 }
 
 /* ============================================
@@ -1354,6 +1660,7 @@ img {
     border: 1px solid var(--color-border-soft);
     height: 100%;
     transition: all var(--transition-base);
+    margin: 0;
 }
 
 .salu-testimonial-card:hover {
@@ -1372,13 +1679,14 @@ img {
     height: 16px;
     fill: var(--color-warning);
     color: var(--color-warning);
+    display: block;
 }
 
 .salu-testimonial-text {
     font-size: 15px;
     line-height: 1.7;
     color: var(--color-charcoal);
-    margin-bottom: var(--space-lg);
+    margin: 0 0 var(--space-lg) 0;
     font-style: italic;
 }
 
@@ -1397,7 +1705,8 @@ img {
     justify-content: center;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-white);
+    color: #FFFFFF;
+    flex-shrink: 0;
 }
 
 .salu-testimonial-name {
@@ -1439,6 +1748,7 @@ img {
     height: 20px;
     fill: var(--color-warning);
     color: var(--color-warning);
+    display: block;
 }
 
 .salu-rating-count {
@@ -1515,6 +1825,7 @@ img {
     font-size: 44px;
     font-weight: 700;
     color: var(--color-ink);
+    line-height: 1;
 }
 
 .salu-pricing-period {
@@ -1541,10 +1852,12 @@ img {
     width: 16px;
     height: 16px;
     color: var(--color-salu-mint);
+    flex-shrink: 0;
+    display: block;
 }
 
 /* ============================================
-   19. FAQ
+   19. PREGUNTAS FRECUENTES
    ============================================ */
 .salu-faq {
     padding: var(--space-4xl) 0;
@@ -1588,6 +1901,7 @@ img {
     font-weight: 600;
     color: var(--color-ink);
     transition: color var(--transition-fast);
+    font-family: var(--font-family);
 }
 
 .salu-faq-question:hover {
@@ -1598,8 +1912,9 @@ img {
     width: 20px;
     height: 20px;
     color: var(--color-muted);
-    transition: transform var(--transition-base);
+    transition: transform var(--transition-base), color var(--transition-base);
     flex-shrink: 0;
+    display: block;
 }
 
 .salu-faq-item.active .salu-faq-question svg {
@@ -1653,6 +1968,7 @@ img {
     width: 60%;
     height: 200%;
     background: radial-gradient(circle, rgba(79, 209, 181, 0.1) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .salu-cta-final-content {
@@ -1665,7 +1981,7 @@ img {
 
 .salu-cta-final-content h2 {
     font-size: 36px;
-    color: var(--color-white);
+    color: #FFFFFF;
     margin-bottom: var(--space-md);
 }
 
@@ -1686,6 +2002,7 @@ img {
 .salu-cta-final-note {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
+    margin: 0;
 }
 
 /* ============================================
@@ -1697,7 +2014,7 @@ img {
 }
 
 .salu-footer .salu-logo-text {
-    color: var(--color-white);
+    color: #FFFFFF;
 }
 
 .salu-footer-tagline {
@@ -1723,7 +2040,8 @@ img {
     transition: all var(--transition-fast);
 }
 
-.salu-footer-social a:hover {
+.salu-footer-social a:hover,
+.salu-footer-social a:focus {
     background: var(--color-salu-mint);
     color: var(--color-midnight-teal);
 }
@@ -1731,10 +2049,12 @@ img {
 .salu-footer-social svg {
     width: 18px;
     height: 18px;
+    display: block;
 }
 
-.salu-footer h5 {
-    color: var(--color-white);
+.salu-footer h5,
+.salu-footer h3 {
+    color: #FFFFFF;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: var(--space-lg);
@@ -1752,7 +2072,8 @@ img {
     transition: color var(--transition-fast);
 }
 
-.salu-footer ul a:hover {
+.salu-footer ul a:hover,
+.salu-footer ul a:focus {
     color: var(--color-salu-mint);
 }
 
@@ -1782,6 +2103,15 @@ img {
 .salu-footer-location svg {
     width: 14px;
     height: 14px;
+    display: block;
+}
+
+.salu-footer-heart {
+    width: 14px;
+    height: 14px;
+    color: var(--color-salu-mint);
+    vertical-align: middle;
+    display: inline-block;
 }
 
 /* ============================================
@@ -1791,6 +2121,7 @@ img {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    will-change: opacity, transform;
 }
 
 .salu-reveal.visible {
@@ -1798,94 +2129,108 @@ img {
     transform: translateY(0);
 }
 
-/* Delays escalonados para grids */
 .salu-reveal-delay-1 { transition-delay: 0.1s; }
 .salu-reveal-delay-2 { transition-delay: 0.2s; }
 .salu-reveal-delay-3 { transition-delay: 0.3s; }
 .salu-reveal-delay-4 { transition-delay: 0.4s; }
 
 /* ============================================
-   23. RESPONSIVE
+   23. RESPONSIVE (CORREGIDO)
    ============================================ */
 @media (max-width: 991px) {
     .salu-hero-title {
         font-size: 36px;
     }
-    
+
     .salu-section-title {
         font-size: 30px;
     }
-    
+
     .salu-hero-mockup {
         margin-top: var(--space-2xl);
     }
-    
+
     .salu-floating-card-1 {
         right: 0;
     }
-    
+
     .salu-floating-card-2 {
         left: 0;
+    }
+
+    .salu-mobile-menu-inner {
+        padding-top: 80px;
     }
 }
 
 @media (max-width: 767px) {
     .salu-hero {
-        padding: 100px 0 60px;
+        padding: 120px 0 60px;
     }
-    
+
     .salu-hero-title {
         font-size: 30px;
     }
-    
+
     .salu-section-title {
         font-size: 26px;
     }
-    
+
     .salu-section-subtitle {
         font-size: 15px;
     }
-    
+
     .salu-hero-ctas {
         flex-direction: column;
     }
-    
+
     .salu-hero-ctas .btn {
         width: 100%;
         justify-content: center;
     }
-    
+
     .salu-hero-social-proof {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--space-md);
     }
-    
+
     .salu-pricing-card {
         margin-bottom: var(--space-md);
     }
-    
+
     .salu-cta-final-content h2 {
         font-size: 28px;
     }
-    
+
     .salu-cta-final-buttons {
         flex-direction: column;
     }
-    
+
     .salu-cta-final-buttons .btn {
         width: 100%;
         justify-content: center;
     }
-    
+
     .salu-footer-bottom {
         flex-direction: column;
         text-align: center;
     }
+
+    .salu-mobile-menu-inner {
+        padding-top: 70px;
+    }
+
+    .salu-scroll-top {
+        bottom: 16px;
+        right: 16px;
+        width: 42px;
+        height: 42px;
+    }
 }
 
 /* ============================================
-   24. ACCESIBILIDAD - REDUCED MOTION
+   24. ACCESIBILIDAD - MOVIMIENTO REDUCIDO
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -1896,13 +2241,19 @@ img {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-    
-    .salu-hero-mockup {
-        animation: none;
-    }
-    
+
+    .salu-hero-mockup,
     .salu-floating-card {
         animation: none;
+    }
+
+    .salu-reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    .salu-scroll-top {
+        transition: none;
     }
 }
 
@@ -1919,4 +2270,383 @@ img {
 
 .mb-2xl {
     margin-bottom: var(--space-2xl);
+}
+
+/* ============================================
+   26. DARK MODE - AJUSTES DE COMPONENTES
+   ============================================ */
+
+[data-theme="dark"] .salu-navbar.scrolled .salu-navbar-inner {
+    background: rgba(16, 35, 41, 0.92);
+    border-color: rgba(36, 67, 74, 0.4);
+    box-shadow: var(--shadow-navbar);
+}
+
+@supports not (backdrop-filter: blur(16px)) {
+    [data-theme="dark"] .salu-navbar.scrolled .salu-navbar-inner {
+        background: rgba(16, 35, 41, 0.97);
+    }
+}
+
+[data-theme="dark"] .salu-logo-text {
+    color: var(--color-ink);
+}
+
+[data-theme="dark"] .salu-logo-icon svg path:first-child {
+    fill: var(--color-teal);
+}
+
+[data-theme="dark"] .salu-navbar-link {
+    color: var(--color-charcoal);
+}
+
+[data-theme="dark"] .salu-navbar-link:hover {
+    color: var(--color-salu-mint);
+    background: var(--color-mint-pale);
+}
+
+[data-theme="dark"] .btn-primary-salu,
+[data-theme="dark"] .btn-primary-salu:hover,
+[data-theme="dark"] .btn-primary-salu:focus {
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .btn-outline-white,
+[data-theme="dark"] .btn-outline-white:hover,
+[data-theme="dark"] .btn-outline-white:focus {
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .btn-mint,
+[data-theme="dark"] .btn-mint:hover,
+[data-theme="dark"] .btn-mint:focus {
+    color: var(--color-midnight-teal);
+}
+
+[data-theme="dark"] .btn-ghost {
+    color: var(--color-ink);
+}
+
+[data-theme="dark"] .btn-ghost:hover {
+    background: var(--color-mint-pale);
+    color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .btn-outline-salu {
+    background: var(--color-teal-dark);
+    border-color: var(--color-border);
+    color: var(--color-ink);
+}
+
+[data-theme="dark"] .btn-outline-salu:hover {
+    border-color: var(--color-salu-mint);
+    background: var(--color-mint-pale);
+    color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .salu-hero-bg {
+    background:
+        radial-gradient(ellipse at 20% 30%, rgba(23, 61, 56, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(15, 42, 38, 0.4) 0%, transparent 50%),
+        linear-gradient(180deg, var(--color-warm-cloud) 0%, var(--color-midnight-teal) 100%);
+}
+
+[data-theme="dark"] .salu-mockup-window {
+    background: var(--color-teal-dark);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-mockup-header {
+    background: var(--color-midnight-teal);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-mockup-content {
+    background: var(--color-warm-cloud);
+}
+
+[data-theme="dark"] .salu-mockup-kpi {
+    background: var(--color-teal-dark);
+}
+
+[data-theme="dark"] .salu-mockup-appointment {
+    background: var(--color-teal-dark);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-mockup-appointment-name {
+    color: var(--color-ink);
+}
+
+[data-theme="dark"] .salu-floating-card {
+    background: var(--color-teal-dark);
+    border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .salu-floating-title {
+    color: var(--color-ink);
+}
+
+[data-theme="dark"] .salu-logos {
+    background: var(--color-midnight-teal);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-logo-item {
+    color: var(--color-muted);
+}
+
+[data-theme="dark"] .salu-logo-item:hover {
+    color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .salu-solution,
+[data-theme="dark"] .salu-benefits,
+[data-theme="dark"] .salu-security,
+[data-theme="dark"] .salu-pricing {
+    background: var(--color-midnight-teal);
+}
+
+[data-theme="dark"] .salu-problem-card,
+[data-theme="dark"] .salu-feature-card,
+[data-theme="dark"] .salu-specialty-card,
+[data-theme="dark"] .salu-testimonial-card,
+[data-theme="dark"] .salu-faq-item {
+    background: var(--color-warm-sand);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-pillar-card,
+[data-theme="dark"] .salu-security-card,
+[data-theme="dark"] .salu-benefit-graph {
+    background: var(--color-warm-sand);
+}
+
+[data-theme="dark"] .salu-pillar-card.featured {
+    background: linear-gradient(135deg, var(--color-mint-pale) 0%, var(--color-warm-sand) 100%);
+    border-color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .salu-pricing-card {
+    background: var(--color-warm-sand);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-pricing-card.featured {
+    background: var(--color-teal-dark);
+    border-color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .salu-problem-icon {
+    background: var(--color-error-soft);
+}
+
+[data-theme="dark"] .salu-feature-icon,
+[data-theme="dark"] .salu-specialty-icon,
+[data-theme="dark"] .salu-benefit-icon {
+    background: var(--color-mint-pale);
+}
+
+[data-theme="dark"] .salu-pillar-icon {
+    background: var(--color-teal-dark);
+    box-shadow: none;
+}
+
+[data-theme="dark"] .salu-pillar-icon svg {
+    color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .salu-section-title,
+[data-theme="dark"] .salu-problem-card h3,
+[data-theme="dark"] .salu-feature-card h3,
+[data-theme="dark"] .salu-security-card h3,
+[data-theme="dark"] .salu-pricing-header h3,
+[data-theme="dark"] .salu-benefit-item h3,
+[data-theme="dark"] .salu-testimonial-name,
+[data-theme="dark"] .salu-faq-question {
+    color: var(--color-ink);
+}
+
+[data-theme="dark"] .salu-section-subtitle,
+[data-theme="dark"] .salu-problem-card p,
+[data-theme="dark"] .salu-feature-card p,
+[data-theme="dark"] .salu-benefit-item p,
+[data-theme="dark"] .salu-testimonial-text,
+[data-theme="dark"] .salu-faq-answer p {
+    color: var(--color-charcoal);
+}
+
+[data-theme="dark"] .salu-faq-item.active {
+    border-color: var(--color-salu-mint);
+    background: var(--color-teal-dark);
+}
+
+[data-theme="dark"] .salu-mobile-menu {
+    background: rgba(11, 23, 27, 0.98);
+}
+
+@supports not (backdrop-filter: blur(20px)) {
+    [data-theme="dark"] .salu-mobile-menu {
+        background: rgba(11, 23, 27, 0.99);
+    }
+}
+
+[data-theme="dark"] .salu-mobile-menu-links a {
+    color: var(--color-ink);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .salu-mobile-menu-links a:hover,
+[data-theme="dark"] .salu-mobile-menu-links a:focus {
+    color: var(--color-salu-mint);
+}
+
+[data-theme="dark"] .salu-navbar-toggle span {
+    background: var(--color-ink);
+}
+
+[data-theme="dark"] .salu-cta-final {
+    background: linear-gradient(135deg, var(--color-teal-dark) 0%, var(--color-midnight-teal) 100%);
+}
+
+[data-theme="dark"] .salu-footer {
+    background: var(--color-midnight-teal);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--color-midnight-teal);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--color-teal-dark);
+    border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-teal);
+}
+
+[data-theme="dark"] * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-teal-dark) var(--color-midnight-teal);
+}
+
+[data-theme="dark"] ::selection {
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+}
+
+[data-theme="light"] ::selection {
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+}
+
+/* ============================================
+   27. ESTILOS DE IMPRESION
+   ============================================ */
+@media print {
+    .salu-navbar,
+    .salu-mobile-menu,
+    .salu-theme-toggle,
+    .salu-cta-final,
+    .salu-hero-ctas,
+    .salu-features-cta,
+    .salu-faq-cta,
+    .salu-scroll-top {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .salu-hero {
+        min-height: auto;
+        padding: 40px 0;
+    }
+
+    section {
+        page-break-inside: avoid;
+    }
+
+    a {
+        text-decoration: underline;
+    }
+
+    a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+}
+
+/* ============================================
+   28. BOTON IR ARRIBA
+   ============================================ */
+.salu-scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    background: var(--color-deep-teal);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity var(--transition-base),
+                visibility var(--transition-base),
+                transform var(--transition-base),
+                background-color var(--transition-base);
+    box-shadow: var(--shadow-card-hover);
+    z-index: var(--z-scroll-top);
+    will-change: transform, opacity;
+}
+
+.salu-scroll-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.salu-scroll-top:hover {
+    background: var(--color-teal);
+    transform: translateY(-4px);
+}
+
+.salu-scroll-top:active {
+    transform: translateY(-2px);
+}
+
+.salu-scroll-top:focus-visible {
+    outline: 2px solid var(--color-salu-mint);
+    outline-offset: 2px;
+}
+
+.salu-scroll-top svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+[data-theme="dark"] .salu-scroll-top {
+    background: var(--color-salu-mint);
+    color: var(--color-midnight-teal);
+}
+
+[data-theme="dark"] .salu-scroll-top:hover {
+    background: var(--color-mint-dark);
 }

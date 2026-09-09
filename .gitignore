@@ -1,0 +1,61 @@
+# ============================================================================
+# SALUVERA - Git Ignore
+# ============================================================================
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+.env.backup
+
+# Composer
+vendor/
+composer.lock
+
+# Almacenamiento
+storage/logs/*
+storage/cache/*
+storage/temp/*
+storage/uploads/*
+
+# Mantener estructura de carpetas
+!storage/logs/.gitkeep
+!storage/cache/.gitkeep
+!storage/temp/.gitkeep
+!storage/uploads/.gitkeep
+!storage/uploads/documents/.gitkeep
+!storage/uploads/avatars/.gitkeep
+!storage/uploads/signatures/.gitkeep
+
+# Archivos de sistema macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Archivos de sistema Windows
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editores de codigo
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Logs y temporales
+*.log
+*.tmp
+*.temp
+*.cache
+
+# Backups
+*.bak
+*.backup
+*.old

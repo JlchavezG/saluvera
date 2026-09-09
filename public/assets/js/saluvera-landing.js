@@ -1,405 +1,741 @@
 /**
  * SALUVERA - Landing Page Interactions
- * 
+ *
  * Interacciones de la landing page usando Vanilla JS moderno.
- * Sin dependencias externas para máximo rendimiento.
- * 
+ * Sin dependencias externas para maximo rendimiento.
+ *
  * Funcionalidades:
- * 1. Navbar con efecto cápsula al hacer scroll
- * 2. Mobile menu toggle
- * 3. FAQ acordeón
+ * 1. Navbar con efecto capsula al hacer scroll
+ * 2. Menu movil con focus trap
+ * 3. FAQ acordeon accesible
  * 4. Scroll reveal (animaciones de entrada)
- * 5. Smooth scroll para anchors
- * 6. Cierre de menú al hacer click en link
- * 
+ * 5. Smooth scroll con reduced motion
+ * 6. Cierre de menu al hacer click en link
+ * 7. Theme Manager (Dark Mode hibrido)
+ * 8. Boton ir arriba
+ * 9. Manejo de resize
+ *
  * @author SALUVERA
- * @version 1.0.0
+ * @version 2.2.0
  */
-
-'use strict';
 
 /* ============================================
-   1. NAVBAR - EFECTO CÁPSULA AL SCROLL
+   IIFE PARA EVITAR CONTAMINACION GLOBAL
    ============================================ */
+(function () {
+    'use strict';
 
-/**
- * Agrega o quita la clase 'scrolled' al navbar
- * cuando el usuario hace scroll más de 50px.
- * 
- * Esto transforma el navbar de transparente
- * a una cápsula con glassmorphism.
- */
-function initNavbarScroll() {
-    const navbar = document.getElementById('mainNavbar');
-    
-    // Verificar que el navbar exista antes de continuar
-    if (!navbar) {
-        console.warn('SALUVERA: Navbar no encontrado');
-        return;
-    }
-    
-    const SCROLL_THRESHOLD = 50; // Píxeles antes de activar el efecto
-    
-    /**
-     * Verifica la posición del scroll y actualiza el navbar
-     */
-    const handleScroll = () => {
-        if (window.scrollY > SCROLL_THRESHOLD) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+    /* ============================================
+       CONFIGURACION Y CONSTANTES
+       ============================================ */
+    const CONFIG = Object.freeze({
+        SCROLL_THRESHOLD: 50,
+        NAVBAR_HEIGHT: 100,
+        THEME_STORAGE_KEY: 'saluvera-theme',
+        DEBUG_MODE: false,
+        REVEAL_ROOT_MARGIN: '0px 0px -50px 0px',
+        REVEAL_THRESHOLD: 0.1,
+        LUCIDE_RETRY_ATTEMPTS: 10,
+        LUCIDE_RETRY_INTERVAL: 100,
+        MOBILE_BREAKPOINT: 992,
+        SCROLL_TOP_THRESHOLD: 300
+    });
+
+    /* ============================================
+       SISTEMA DE LOGGING
+       ============================================ */
+    const Logger = {
+        info: (message, data = null) => {
+            if (CONFIG.DEBUG_MODE) {
+                console.log('[SALUVERA] ' + message, data ?? '');
+            }
+        },
+        warn: (message, data = null) => {
+            console.warn('[SALUVERA] ' + message, data ?? '');
+        },
+        error: (message, data = null) => {
+            console.error('[SALUVERA] ' + message, data ?? '');
+        },
+        branded: () => {
+            console.log(
+                '%cSALUVERA%c v2.2.0 - Tecnologia para cuidar lo que importa.',
+                'color: #123C46; font-size: 16px; font-weight: bold;',
+                'color: #4FD1B5; font-size: 12px;'
+            );
         }
     };
-    
-    // Ejecutar al cargar la página (por si el usuario ya hizo scroll)
-    handleScroll();
-    
-    // Usar 'passive: true' para mejor rendimiento en scroll
-    window.addEventListener('scroll', handleScroll, { passive: true });
-}
 
-/* ============================================
-   2. MOBILE MENU - TOGGLE
-   ============================================ */
-
-/**
- * Maneja la apertura y cierre del menú móvil.
- * Incluye:
- * - Toggle del botón hamburguesa
- * - Toggle del drawer del menú
- * - Bloqueo del scroll del body cuando está abierto
- * - Cierre con tecla Escape (accesibilidad)
- */
-function initMobileMenu() {
-    const toggleButton = document.getElementById('mobileMenuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    // Verificar que los elementos existan
-    if (!toggleButton || !mobileMenu) {
-        console.warn('SALUVERA: Mobile menu no encontrado');
-        return;
-    }
-    
-    let isOpen = false;
-    
-    /**
-     * Abre o cierra el menú móvil
-     * @param {boolean} open - true para abrir, false para cerrar
-     */
-    const toggleMenu = (open) => {
-        isOpen = open;
-        
-        // Toggle de clases
-        toggleButton.classList.toggle('active', isOpen);
-        mobileMenu.classList.toggle('active', isOpen);
-        
-        // Actualizar atributos ARIA para accesibilidad
-        toggleButton.setAttribute('aria-expanded', isOpen.toString());
-        toggleButton.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
-        
-        // Bloquear scroll del body cuando el menú está abierto
-        document.body.style.overflow = isOpen ? 'hidden' : '';
+    /* ============================================
+       UTILIDADES
+       ============================================ */
+    const prefersReducedMotion = () => {
+        return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
     };
-    
-    // Toggle al hacer click en el botón
-    toggleButton.addEventListener('click', () => {
-        toggleMenu(!isOpen);
-    });
-    
-    // Cerrar con tecla Escape (accesibilidad)
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && isOpen) {
-            toggleMenu(false);
-            toggleButton.focus(); // Devolver el focus al botón
+
+    const isLocalStorageAvailable = () => {
+        try {
+            const testKey = '__saluvera_test__';
+            localStorage.setItem(testKey, testKey);
+            localStorage.removeItem(testKey);
+            return true;
+        } catch (e) {
+            return false;
         }
-    });
-}
+    };
 
-/* ============================================
-   3. CIERRE DE MENÚ AL HACER CLICK EN LINK
-   ============================================ */
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
 
-/**
- * Cierra el menú móvil automáticamente cuando
- * el usuario hace click en un enlace de navegación.
- * 
- * Esto mejora la UX en mobile: el usuario selecciona
- * una sección y el menú se cierra solo.
- */
-function initMenuLinkClose() {
-    const mobileMenu = document.getElementById('mobileMenu');
-    const toggleButton = document.getElementById('mobileMenuToggle');
-    
-    if (!mobileMenu || !toggleButton) {
-        return;
-    }
-    
-    // Seleccionar todos los links dentro del menú móvil
-    const menuLinks = mobileMenu.querySelectorAll('a');
-    
-    menuLinks.forEach((link) => {
-        link.addEventListener('click', () => {
-            // Cerrar el menú
-            toggleButton.classList.remove('active');
-            mobileMenu.classList.remove('active');
-            toggleButton.setAttribute('aria-expanded', 'false');
-            toggleButton.setAttribute('aria-label', 'Abrir menú');
-            document.body.style.overflow = '';
+    const getElement = (selector, all = false) => {
+        try {
+            if (selector.startsWith('#')) {
+                return document.getElementById(selector.substring(1));
+            }
+            return all
+                ? document.querySelectorAll(selector)
+                : document.querySelector(selector);
+        } catch (error) {
+            Logger.warn('Selector invalido: ' + selector);
+            return all ? [] : null;
+        }
+    };
+
+    /* ============================================
+       1. NAVBAR - EFECTO CAPSULA AL SCROLL
+       ============================================ */
+    const initNavbarScroll = () => {
+        const navbar = getElement('#mainNavbar');
+
+        if (!navbar) {
+            Logger.warn('Navbar no encontrado');
+            return;
+        }
+
+        let lastKnownScrollY = window.scrollY;
+        let ticking = false;
+
+        const updateNavbar = () => {
+            if (lastKnownScrollY > CONFIG.SCROLL_THRESHOLD) {
+                if (!navbar.classList.contains('scrolled')) {
+                    navbar.classList.add('scrolled');
+                }
+            } else {
+                if (navbar.classList.contains('scrolled')) {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+            ticking = false;
+        };
+
+        const onScroll = () => {
+            lastKnownScrollY = window.scrollY;
+            if (!ticking) {
+                window.requestAnimationFrame(updateNavbar);
+                ticking = true;
+            }
+        };
+
+        updateNavbar();
+        window.addEventListener('scroll', onScroll, { passive: true });
+    };
+
+    /* ============================================
+       2. MENU MOVIL CON FOCUS TRAP
+       ============================================ */
+    const initMobileMenu = () => {
+        const toggleButton = getElement('#mobileMenuToggle');
+        const mobileMenu = getElement('#mobileMenu');
+
+        if (!toggleButton || !mobileMenu) {
+            Logger.warn('Menu movil no encontrado');
+            return;
+        }
+
+        let isOpen = false;
+        let previouslyFocusedElement = null;
+
+        const getFocusableElements = () => {
+            const focusableSelectors = [
+                'a[href]',
+                'button:not([disabled])',
+                'input:not([disabled])',
+                'textarea:not([disabled])',
+                'select:not([disabled])',
+                '[tabindex]:not([tabindex="-1"])'
+            ].join(', ');
+
+            return Array.from(mobileMenu.querySelectorAll(focusableSelectors));
+        };
+
+        const trapFocus = (event) => {
+            if (event.key !== 'Tab') return;
+
+            const focusableElements = getFocusableElements();
+            if (focusableElements.length === 0) return;
+
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (event.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    event.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    event.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        };
+
+        const toggleMenu = (open) => {
+            isOpen = open;
+
+            if (open) {
+                previouslyFocusedElement = document.activeElement;
+            }
+
+            toggleButton.classList.toggle('active', isOpen);
+            mobileMenu.classList.toggle('active', isOpen);
+
+            toggleButton.setAttribute('aria-expanded', String(isOpen));
+            toggleButton.setAttribute('aria-label', isOpen ? 'Cerrar menu' : 'Abrir menu');
+            mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+
+            if (isOpen) {
+                const scrollY = window.scrollY;
+                document.body.style.position = 'fixed';
+                document.body.style.top = '-' + scrollY + 'px';
+                document.body.style.width = '100%';
+                document.body.dataset.scrollPosition = String(scrollY);
+            } else {
+                const scrollY = parseInt(document.body.dataset.scrollPosition || '0', 10);
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.width = '';
+                window.scrollTo(0, scrollY);
+                delete document.body.dataset.scrollPosition;
+
+                if (previouslyFocusedElement && previouslyFocusedElement.focus) {
+                    previouslyFocusedElement.focus();
+                }
+            }
+
+            if (isOpen) {
+                document.addEventListener('keydown', trapFocus);
+                const focusableElements = getFocusableElements();
+                if (focusableElements.length > 0) {
+                    setTimeout(() => focusableElements[0].focus(), 100);
+                }
+            } else {
+                document.removeEventListener('keydown', trapFocus);
+            }
+        };
+
+        toggleButton.addEventListener('click', () => {
+            toggleMenu(!isOpen);
         });
-    });
-}
 
-/* ============================================
-   4. FAQ - ACORDEÓN
-   ============================================ */
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && isOpen) {
+                toggleMenu(false);
+            }
+        });
 
-/**
- * Maneja el comportamiento del acordeón de FAQ.
- * 
- * Características:
- * - Solo un item abierto a la vez
- * - Animación suave de apertura/cierre
- * - Actualización de atributos ARIA
- * - Accesible por teclado
- */
-function initFaqAccordion() {
-    const faqItems = document.querySelectorAll('.salu-faq-item');
-    
-    if (faqItems.length === 0) {
-        console.warn('SALUVERA: FAQ items no encontrados');
-        return;
-    }
-    
-    faqItems.forEach((item) => {
-        const question = item.querySelector('.salu-faq-question');
-        
-        if (!question) return;
-        
-        question.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            
-            // Cerrar todos los items
-            faqItems.forEach((otherItem) => {
-                otherItem.classList.remove('active');
-                const otherQuestion = otherItem.querySelector('.salu-faq-question');
-                if (otherQuestion) {
-                    otherQuestion.setAttribute('aria-expanded', 'false');
+        window.addEventListener('resize', debounce(() => {
+            if (window.innerWidth >= CONFIG.MOBILE_BREAKPOINT && isOpen) {
+                toggleMenu(false);
+            }
+        }, 150));
+    };
+
+    /* ============================================
+       3. CIERRE DE MENU AL HACER CLICK EN LINK
+       ============================================ */
+    const initMenuLinkClose = () => {
+        const mobileMenu = getElement('#mobileMenu');
+        const toggleButton = getElement('#mobileMenuToggle');
+
+        if (!mobileMenu || !toggleButton) {
+            return;
+        }
+
+        const menuLinks = mobileMenu.querySelectorAll('a');
+
+        menuLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                if (mobileMenu.classList.contains('active')) {
+                    toggleButton.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    toggleButton.setAttribute('aria-expanded', 'false');
+                    toggleButton.setAttribute('aria-label', 'Abrir menu');
+                    mobileMenu.setAttribute('aria-hidden', 'true');
+
+                    const scrollY = parseInt(document.body.dataset.scrollPosition || '0', 10);
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.width = '';
+                    if (scrollY) {
+                        window.scrollTo(0, scrollY);
+                    }
+                    delete document.body.dataset.scrollPosition;
                 }
             });
-            
-            // Abrir el item clickeado (si estaba cerrado)
-            if (!isActive) {
-                item.classList.add('active');
+        });
+    };
+
+    /* ============================================
+       4. FAQ - ACORDEON ACCESIBLE
+       ============================================ */
+    const initFaqAccordion = () => {
+        const faqItems = getElement('.salu-faq-item', true);
+
+        if (!faqItems || faqItems.length === 0) {
+            Logger.warn('FAQ items no encontrados');
+            return;
+        }
+
+        const openItem = (item, question, answer) => {
+            item.classList.add('active');
+            question.setAttribute('aria-expanded', 'true');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+        };
+
+        const closeItem = (item, question, answer) => {
+            item.classList.remove('active');
+            question.setAttribute('aria-expanded', 'false');
+            answer.style.maxHeight = '0';
+        };
+
+        faqItems.forEach((item) => {
+            const question = item.querySelector('.salu-faq-question');
+            const answer = item.querySelector('.salu-faq-answer');
+
+            if (!question || !answer) return;
+
+            if (item.classList.contains('active')) {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
                 question.setAttribute('aria-expanded', 'true');
+            } else {
+                answer.style.maxHeight = '0';
+                question.setAttribute('aria-expanded', 'false');
             }
-        });
-    });
-}
 
-/* ============================================
-   5. SCROLL REVEAL - ANIMACIONES DE ENTRADA
-   ============================================ */
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
 
-/**
- * Agrega animaciones de entrada a los elementos
- * cuando entran en el viewport.
- * 
- * Usa Intersection Observer para máximo rendimiento
- * (no usa scroll events, es mucho más eficiente).
- * 
- * Los elementos deben tener la clase 'salu-reveal'
- * para ser animados.
- */
-function initScrollReveal() {
-    // Seleccionar todos los elementos que deben animarse
-    const revealElements = document.querySelectorAll('.salu-reveal');
-    
-    if (revealElements.length === 0) {
-        // Si no hay elementos con la clase, no hacer nada
-        return;
-    }
-    
-    // Verificar soporte de Intersection Observer
-    if (!('IntersectionObserver' in window)) {
-        // Fallback: mostrar todos los elementos inmediatamente
-        revealElements.forEach((el) => {
-            el.classList.add('visible');
-        });
-        return;
-    }
-    
-    // Configuración del observer
-    const observerOptions = {
-        root: null, // viewport
-        rootMargin: '0px 0px -50px 0px', // activar 50px antes de entrar
-        threshold: 0.1 // 10% del elemento visible
-    };
-    
-    /**
-     * Callback ejecutado cuando un elemento entra/sale del viewport
-     */
-    const observerCallback = (entries, observer) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                // Agregar clase visible para animar
-                entry.target.classList.add('visible');
-                
-                // Dejar de observar este elemento (solo se anima una vez)
-                observer.unobserve(entry.target);
-            }
+                faqItems.forEach((otherItem) => {
+                    if (otherItem !== item) {
+                        const otherQuestion = otherItem.querySelector('.salu-faq-question');
+                        const otherAnswer = otherItem.querySelector('.salu-faq-answer');
+                        if (otherQuestion && otherAnswer && otherItem.classList.contains('active')) {
+                            closeItem(otherItem, otherQuestion, otherAnswer);
+                        }
+                    }
+                });
+
+                if (isActive) {
+                    closeItem(item, question, answer);
+                } else {
+                    openItem(item, question, answer);
+                }
+            });
+
+            question.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    question.click();
+                }
+            });
         });
     };
-    
-    // Crear el observer
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-    
-    // Observar cada elemento
-    revealElements.forEach((element) => {
-        observer.observe(element);
-    });
-}
 
-/**
- * Agrega la clase 'salu-reveal' automáticamente a elementos
- * que deben animarse, basándose en su posición en el DOM.
- * 
- * Esto evita tener que agregar la clase manualmente en el HTML
- * para elementos comunes como cards.
- */
-function setupRevealElements() {
-    // Selectores de elementos que deben animarse
-    const selectors = [
-        '.salu-problem-card',
-        '.salu-pillar-card',
-        '.salu-feature-card',
-        '.salu-benefit-item',
-        '.salu-specialty-card',
-        '.salu-security-card',
-        '.salu-testimonial-card',
-        '.salu-pricing-card',
-        '.salu-faq-item',
-        '.salu-section-header'
-    ];
-    
-    selectors.forEach((selector) => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach((element, index) => {
-            element.classList.add('salu-reveal');
-            
-            // Agregar delay escalonado para grids (máximo 4 niveles)
-            const delayClass = `salu-reveal-delay-${(index % 4) + 1}`;
-            element.classList.add(delayClass);
+    /* ============================================
+       5. SCROLL REVEAL - ANIMACIONES DE ENTRADA
+       ============================================ */
+    const initScrollReveal = () => {
+        const revealElements = getElement('.salu-reveal', true);
+
+        if (!revealElements || revealElements.length === 0) {
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            revealElements.forEach((el) => {
+                el.classList.add('visible');
+            });
+            return;
+        }
+
+        if (!('IntersectionObserver' in window)) {
+            revealElements.forEach((el) => {
+                el.classList.add('visible');
+            });
+            return;
+        }
+
+        const observerOptions = {
+            root: null,
+            rootMargin: CONFIG.REVEAL_ROOT_MARGIN,
+            threshold: CONFIG.REVEAL_THRESHOLD
+        };
+
+        const observerCallback = (entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        revealElements.forEach((element) => {
+            observer.observe(element);
         });
-    });
-}
+    };
 
-/* ============================================
-   6. SMOOTH SCROLL PARA ANCHORS
-   ============================================ */
+    const setupRevealElements = () => {
+        const selectors = [
+            '.salu-problem-card',
+            '.salu-pillar-card',
+            '.salu-feature-card',
+            '.salu-benefit-item',
+            '.salu-specialty-card',
+            '.salu-security-card',
+            '.salu-testimonial-card',
+            '.salu-pricing-card',
+            '.salu-faq-item',
+            '.salu-section-header'
+        ];
 
-/**
- * Habilita scroll suave para todos los enlaces
- * que apuntan a secciones de la página (anchors).
- * 
- * Compensa la altura del navbar fijo para que
- * el contenido no quede oculto debajo de él.
- */
-function initSmoothScroll() {
-    const anchors = document.querySelectorAll('a[href^="#"]');
-    
-    anchors.forEach((anchor) => {
-        anchor.addEventListener('click', (event) => {
-            const href = anchor.getAttribute('href');
-            
-            // Ignorar links vacíos o "#"
-            if (!href || href === '#') {
-                event.preventDefault();
+        selectors.forEach((selector) => {
+            const elements = getElement(selector, true);
+            if (!elements) return;
+
+            elements.forEach((element, index) => {
+                element.classList.add('salu-reveal');
+                const delayClass = 'salu-reveal-delay-' + ((index % 4) + 1);
+                element.classList.add(delayClass);
+            });
+        });
+    };
+
+    /* ============================================
+       6. SMOOTH SCROLL PARA ANCHORS
+       ============================================ */
+    const initSmoothScroll = () => {
+        const anchors = getElement('a[href^="#"]', true);
+
+        if (!anchors) return;
+
+        anchors.forEach((anchor) => {
+            anchor.addEventListener('click', (event) => {
+                const href = anchor.getAttribute('href');
+
+                if (!href || href === '#' || href.length < 2) {
+                    event.preventDefault();
+                    return;
+                }
+
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    event.preventDefault();
+
+                    const targetPosition =
+                        targetElement.getBoundingClientRect().top +
+                        window.scrollY -
+                        CONFIG.NAVBAR_HEIGHT;
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+                    });
+
+                    history.pushState(null, '', href);
+
+                    targetElement.setAttribute('tabindex', '-1');
+                    targetElement.focus({ preventScroll: true });
+                }
+            });
+        });
+    };
+
+    /* ============================================
+       7. INICIALIZACION DE LUCIDE ICONS
+       ============================================ */
+    const initLucideIcons = () => {
+        let attempts = 0;
+
+        const tryInit = () => {
+            attempts++;
+
+            if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+                try {
+                    lucide.createIcons();
+                    Logger.info('Lucide Icons inicializado (intento ' + attempts + ')');
+                } catch (error) {
+                    Logger.error('Error al inicializar Lucide Icons', error);
+                }
                 return;
             }
-            
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-                event.preventDefault();
-                
-                // Calcular posición compensando el navbar fijo
-                const navbarHeight = 80;
-                const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navbarHeight;
-                
-                // Scroll suave
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-                
-                // Actualizar la URL sin recargar la página
-                history.pushState(null, null, href);
+
+            if (attempts < CONFIG.LUCIDE_RETRY_ATTEMPTS) {
+                setTimeout(tryInit, CONFIG.LUCIDE_RETRY_INTERVAL);
+            } else {
+                Logger.warn('Lucide Icons no se pudo cargar despues de ' + attempts + ' intentos');
             }
+        };
+
+        tryInit();
+    };
+
+    /* ============================================
+       7.5 THEME MANAGER - DARK MODE HIBRIDO
+       ============================================ */
+    const initThemeManager = () => {
+        const themeToggleDesktop = getElement('#themeToggleDesktop');
+        const themeToggleMobile = getElement('#themeToggleMobile');
+
+        const systemThemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+
+        const announcer = document.createElement('div');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.classList.add('visually-hidden');
+        announcer.id = 'theme-announcer';
+        document.body.appendChild(announcer);
+
+        const getCurrentTheme = () => {
+            return document.documentElement.getAttribute('data-theme') || 'light';
+        };
+
+        const updateToggleStates = (theme) => {
+            const isPressed = theme === 'dark';
+            [themeToggleDesktop, themeToggleMobile].forEach((button) => {
+                if (button) {
+                    button.setAttribute('aria-pressed', String(isPressed));
+                }
+            });
+        };
+
+        const applyTheme = (theme, save = true, announce = false) => {
+            const validTheme = theme === 'dark' ? 'dark' : 'light';
+
+            document.documentElement.setAttribute('data-theme', validTheme);
+
+            if (save && isLocalStorageAvailable()) {
+                try {
+                    localStorage.setItem(CONFIG.THEME_STORAGE_KEY, validTheme);
+                } catch (error) {
+                    Logger.warn('No se pudo guardar la preferencia de tema', error);
+                }
+            }
+
+            const ariaLabel = validTheme === 'dark'
+                ? 'Cambiar a modo claro'
+                : 'Cambiar a modo oscuro';
+
+            [themeToggleDesktop, themeToggleMobile].forEach((button) => {
+                if (button) {
+                    button.setAttribute('aria-label', ariaLabel);
+                    button.setAttribute('title', ariaLabel);
+                }
+            });
+
+            updateToggleStates(validTheme);
+
+            if (announce) {
+                const message = validTheme === 'dark'
+                    ? 'Modo oscuro activado'
+                    : 'Modo claro activado';
+                announcer.textContent = message;
+            }
+        };
+
+        const toggleTheme = () => {
+            const currentTheme = getCurrentTheme();
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme, true, true);
+            Logger.info('Tema cambiado a: ' + newTheme);
+        };
+
+        const initializeTheme = () => {
+            let theme = null;
+
+            if (isLocalStorageAvailable()) {
+                try {
+                    theme = localStorage.getItem(CONFIG.THEME_STORAGE_KEY);
+                } catch (error) {
+                    Logger.warn('Error al leer preferencia de tema', error);
+                }
+            }
+
+            if (!theme) {
+                theme = systemThemeQuery?.matches ? 'dark' : 'light';
+            }
+
+            applyTheme(theme, false, false);
+        };
+
+        const handleSystemThemeChange = (event) => {
+            let hasSavedPreference = false;
+
+            if (isLocalStorageAvailable()) {
+                try {
+                    hasSavedPreference =
+                        localStorage.getItem(CONFIG.THEME_STORAGE_KEY) !== null;
+                } catch (error) {
+                    hasSavedPreference = false;
+                }
+            }
+
+            if (!hasSavedPreference) {
+                const newTheme = event.matches ? 'dark' : 'light';
+                applyTheme(newTheme, false, false);
+                Logger.info('Tema del sistema cambio a: ' + newTheme);
+            }
+        };
+
+        initializeTheme();
+
+        if (themeToggleDesktop) {
+            themeToggleDesktop.addEventListener('click', toggleTheme);
+        }
+
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', toggleTheme);
+        }
+
+        if (systemThemeQuery && typeof systemThemeQuery.addEventListener === 'function') {
+            systemThemeQuery.addEventListener('change', handleSystemThemeChange);
+        } else if (systemThemeQuery && typeof systemThemeQuery.addListener === 'function') {
+            systemThemeQuery.addListener(handleSystemThemeChange);
+        }
+
+        Logger.info('Theme Manager inicializado');
+    };
+
+    /* ============================================
+       7.7 BOTON IR ARRIBA
+       ============================================ */
+    const initScrollTop = () => {
+        const scrollTopBtn = getElement('#scrollTopBtn');
+
+        if (!scrollTopBtn) {
+            Logger.warn('Boton scroll-top no encontrado');
+            return;
+        }
+
+        const toggleVisibility = () => {
+            if (window.scrollY > CONFIG.SCROLL_TOP_THRESHOLD) {
+                if (!scrollTopBtn.classList.contains('visible')) {
+                    scrollTopBtn.classList.add('visible');
+                }
+            } else {
+                if (scrollTopBtn.classList.contains('visible')) {
+                    scrollTopBtn.classList.remove('visible');
+                }
+            }
+        };
+
+        const scrollToTop = () => {
+            window.scrollTo({
+                top: 0,
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+            });
+
+            const mainContent = getElement('#contenido-principal');
+            if (mainContent) {
+                mainContent.setAttribute('tabindex', '-1');
+                mainContent.focus({ preventScroll: true });
+            }
+        };
+
+        toggleVisibility();
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
+        scrollTopBtn.addEventListener('click', scrollToTop);
+
+        Logger.info('Boton scroll-top inicializado');
+    };
+
+    /* ============================================
+       8. MANEJO DE RESIZE
+       ============================================ */
+    const initResizeHandler = () => {
+        const handleResize = debounce(() => {
+            const activeFaqAnswers = getElement('.salu-faq-item.active .salu-faq-answer', true);
+            if (activeFaqAnswers) {
+                activeFaqAnswers.forEach((answer) => {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                });
+            }
+        }, 150);
+
+        window.addEventListener('resize', handleResize, { passive: true });
+    };
+
+    /* ============================================
+       9. INICIALIZACION PRINCIPAL
+       ============================================ */
+    const initSaluveraLanding = () => {
+        try {
+            setupRevealElements();
+
+            initThemeManager();
+            initNavbarScroll();
+            initMobileMenu();
+            initMenuLinkClose();
+            initFaqAccordion();
+            initScrollReveal();
+            initSmoothScroll();
+            initScrollTop();
+            initResizeHandler();
+
+            initLucideIcons();
+
+            Logger.branded();
+            Logger.info('Landing page inicializada correctamente');
+        } catch (error) {
+            Logger.error('Error al inicializar la landing page', error);
+        }
+    };
+
+    /* ============================================
+       10. MANEJO DE ERRORES GLOBALES
+       ============================================ */
+    window.addEventListener('error', (event) => {
+        Logger.error('Error no capturado', {
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno
         });
     });
-}
 
-/* ============================================
-   7. INICIALIZACIÓN DE LUCIDE ICONS
-   ============================================ */
+    window.addEventListener('unhandledrejection', (event) => {
+        Logger.error('Promise rechazada sin manejar', event.reason);
+    });
 
-/**
- * Inicializa los iconos de Lucide.
- * 
- * Nota: Lucide se inicializa en el HTML con lucide.createIcons(),
- * pero si se agregan iconos dinámicamente, se puede llamar
- * esta función para renderizarlos.
- */
-function initLucideIcons() {
-    // Verificar que Lucide esté disponible
-    if (typeof lucide !== 'undefined' && lucide.createIcons) {
-        lucide.createIcons();
+    /* ============================================
+       11. EJECUCION
+       ============================================ */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSaluveraLanding);
     } else {
-        console.warn('SALUVERA: Lucide Icons no está cargado');
+        initSaluveraLanding();
     }
-}
-
-/* ============================================
-   8. INICIALIZACIÓN PRINCIPAL
-   ============================================ */
-
-/**
- * Función principal que inicializa todas las
- * interacciones de la landing page.
- * 
- * Se ejecuta cuando el DOM está completamente cargado.
- */
-function initSaluveraLanding() {
-    // 1. Configurar elementos que deben animarse
-    setupRevealElements();
-    
-    // 2. Inicializar todas las funcionalidades
-    initNavbarScroll();
-    initMobileMenu();
-    initMenuLinkClose();
-    initFaqAccordion();
-    initScrollReveal();
-    initSmoothScroll();
-    
-    // 3. Inicializar iconos (por si acaso)
-    initLucideIcons();
-    
-    // Log de confirmación en desarrollo
-    console.log('%c🏥 SALUVERA', 'color: #123C46; font-size: 16px; font-weight: bold;');
-    console.log('%cTecnología para cuidar lo que importa.', 'color: #4FD1B5; font-size: 12px;');
-    console.log('%cLanding page inicializada correctamente ✓', 'color: #66777C; font-size: 11px;');
-}
-
-/* ============================================
-   9. EJECUCIÓN
-   ============================================ */
-
-// Ejecutar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    // El DOM aún está cargando
-    document.addEventListener('DOMContentLoaded', initSaluveraLanding);
-} else {
-    // El DOM ya está cargado (script al final del body)
-    initSaluveraLanding();
-}
+})();
