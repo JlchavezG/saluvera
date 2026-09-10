@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 if (!defined('SALUVERA_APP')) {
     define('SALUVERA_APP', true);
@@ -29,7 +29,6 @@ class Request
         $this->uri = $this->parseUri();
         $this->parseJson();
 
-        // Soporte para PUT, PATCH, DELETE con _method
         if ($this->method === 'POST' && isset($this->post['_method'])) {
             $this->method = strtoupper($this->post['_method']);
         }
@@ -60,7 +59,27 @@ class Request
     {
         $uri = $this->server['REQUEST_URI'] ?? '/';
         $uri = parse_url($uri, PHP_URL_PATH);
+
+        // Obtener el nombre del script actual (app.php, index.php, etc.)
+        $scriptName = basename($this->server['SCRIPT_NAME'] ?? '');
+        $scriptDir = dirname($this->server['SCRIPT_NAME'] ?? '');
+
+        // Eliminar el nombre del script de la URI
+        if ($scriptName && str_contains($uri, $scriptName)) {
+            $uri = str_replace($scriptName, '', $uri);
+        }
+
+        // Eliminar el directorio del script si esta presente
+        if ($scriptDir && $scriptDir !== '/' && $scriptDir !== '\\') {
+            $scriptDir = str_replace('\\', '/', $scriptDir);
+            if (str_starts_with($uri, $scriptDir)) {
+                $uri = substr($uri, strlen($scriptDir));
+            }
+        }
+
+        // Limpiar barras multiples y asegurar que empiece con /
         $uri = '/' . trim($uri, '/');
+
         return $uri === '//' ? '/' : $uri;
     }
 
@@ -78,10 +97,6 @@ class Request
             }
         }
     }
-
-    // ========================================================================
-    // METODOS HTTP
-    // ========================================================================
 
     public function method(): string
     {
@@ -123,10 +138,6 @@ class Request
         return $this->json !== null;
     }
 
-    // ========================================================================
-    // URL Y RUTAS
-    // ========================================================================
-
     public function uri(): string
     {
         return $this->uri;
@@ -164,13 +175,8 @@ class Request
         return $this->routeParams[$key] ?? $default;
     }
 
-    // ========================================================================
-    // DATOS DE ENTRADA
-    // ========================================================================
-
     public function input(string $key, mixed $default = null): mixed
     {
-        // Prioridad: JSON > POST > GET > Route Params
         if ($this->json !== null && isset($this->json[$key])) {
             return $this->json[$key];
         }
@@ -240,10 +246,6 @@ class Request
         return $all;
     }
 
-    // ========================================================================
-    // ARCHIVOS
-    // ========================================================================
-
     public function file(string $key): ?array
     {
         return $this->files[$key] ?? null;
@@ -260,10 +262,6 @@ class Request
         $file = $this->file($key);
         return $file !== null && $file['error'] === UPLOAD_ERR_OK;
     }
-
-    // ========================================================================
-    // HEADERS Y COOKIES
-    // ========================================================================
 
     public function header(string $key, mixed $default = null): mixed
     {
@@ -284,10 +282,6 @@ class Request
         }
         return null;
     }
-
-    // ========================================================================
-    // INFORMACION DEL CLIENTE
-    // ========================================================================
 
     public function ip(): string
     {
@@ -314,10 +308,6 @@ class Request
     {
         return $this->server['HTTP_REFERER'] ?? null;
     }
-
-    // ========================================================================
-    // VALIDACION BASICA
-    // ========================================================================
 
     public function sanitized(string $key): string
     {
@@ -350,10 +340,6 @@ class Request
         return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : null;
     }
 
-    // ========================================================================
-    // UTILIDADES
-    // ========================================================================
-
     public function server(string $key, mixed $default = null): mixed
     {
         return $this->server[$key] ?? $default;
@@ -373,4 +359,4 @@ class Request
             'is_ajax' => $this->isAjax(),
         ];
     }
-}   
+}       

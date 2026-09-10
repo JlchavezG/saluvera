@@ -116,7 +116,7 @@ declare(strict_types=1);
                         </span>
                     </button>
 
-                    <a href="#" class="btn btn-ghost">Iniciar sesion</a>
+                    <a href="/saluvera/public/login" class="btn btn-ghost">Iniciar sesion</a>
                     <a href="#" class="btn btn-primary-salu">Prueba gratis</a>
                 </div>
 

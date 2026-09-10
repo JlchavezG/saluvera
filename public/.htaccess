@@ -1,0 +1,22 @@
+    # SALUVERA - Configuracion de Apache
+# Redirige todas las peticiones a app.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Si la solicitud NO es a un archivo o directorio existente
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Redirigir todo a app.php
+    RewriteRule ^(.*)$ app.php [QSA,L]
+</IfModule>
+
+# Seguridad: Prevenir acceso a archivos sensibles
+<FilesMatch "^\.(env|htaccess|gitignore)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deshabilitar listado de directorios
+Options -Indexes
