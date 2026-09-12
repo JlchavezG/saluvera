@@ -7,10 +7,12 @@ if (!defined('SALUVERA_APP')) {
 class ReporteController
 {
     private Reporte $model;
+    private ReportePlataforma $plataformaModel;
 
     public function __construct()
     {
         $this->model = new Reporte();
+        $this->plataformaModel = new ReportePlataforma();
     }
 
     private function orgId(): int
@@ -202,7 +204,7 @@ class ReporteController
         if ($rol === 'professional') {
             $this->reporteProfesional($request, $response);
         } elseif ($this->esSuperAdmin()) {
-            $this->reporteGlobal($request, $response);
+            $this->reportePlataforma($request, $response);
         } else {
             $this->reporteOrg($request, $response);
         }
@@ -283,6 +285,51 @@ class ReporteController
     // ========================================================================
     // REPORTE GLOBAL (superadmin)
     // ========================================================================
+
+    private function reportePlataforma(Request $request, Response $response): void
+    {
+        $kpis = $this->plataformaModel->kpisResumen();
+        $crecimiento = $this->plataformaModel->crecimientoOrganizaciones();
+        $citasPorMes = $this->plataformaModel->citasPorMes();
+        
+        $usuariosPorRol = $this->plataformaModel->usuariosPorRol();
+        $profesionalesPorEspecialidad = $this->plataformaModel->profesionalesPorEspecialidad();
+        $pacientesPorGenero = $this->plataformaModel->pacientesPorGenero();
+        $pacientesPorEdad = $this->plataformaModel->pacientesPorRangoEdad();
+        $pacientesPorCiudad = $this->plataformaModel->pacientesPorCiudad();
+        $usuariosActivos = $this->plataformaModel->usuariosActivos();
+        $ultimoAcceso = $this->plataformaModel->ultimoAccesoPorUsuario();
+        
+        $benchmark = $this->plataformaModel->benchmarkOrganizaciones();
+        $ratios = $this->plataformaModel->ratioPacientesPorProfesional();
+        
+        $topProcesos = $this->plataformaModel->topProcesos();
+        $noShowPorEspecialidad = $this->plataformaModel->tasaNoShowPorEspecialidad();
+        $consultasPorEstado = $this->plataformaModel->consultasPorEstado();
+        $documentosPorTipo = $this->plataformaModel->documentosPorTipo();
+
+        $content = View::render('Pages/reportes/plataforma', [
+            'kpis' => $kpis,
+            'crecimiento' => $crecimiento,
+            'citasPorMes' => $citasPorMes,
+            'usuariosPorRol' => $usuariosPorRol,
+            'profesionalesPorEspecialidad' => $profesionalesPorEspecialidad,
+            'pacientesPorGenero' => $pacientesPorGenero,
+            'pacientesPorEdad' => $pacientesPorEdad,
+            'pacientesPorCiudad' => $pacientesPorCiudad,
+            'usuariosActivos' => $usuariosActivos,
+            'ultimoAcceso' => $ultimoAcceso,
+            'benchmark' => $benchmark,
+            'ratios' => $ratios,
+            'topProcesos' => $topProcesos,
+            'noShowPorEspecialidad' => $noShowPorEspecialidad,
+            'consultasPorEstado' => $consultasPorEstado,
+            'documentosPorTipo' => $documentosPorTipo,
+        ]);
+
+        $html = View::render('Layouts.panel', ['pageTitle' => 'Reportes de Plataforma', 'content' => $content]);
+        $response->html($html);
+    }
 
     private function reporteGlobal(Request $request, Response $response): void
     {
