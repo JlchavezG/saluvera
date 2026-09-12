@@ -202,6 +202,18 @@ class DocumentoController
             'subido_por' => Session::getUserId(),
         ]);
 
+        // Notificacion automatica al paciente (WhatsApp + portal)
+        $notModel = new Notificacion();
+        $notModel->crear([
+            'organizacion_id' => (int) $paciente['organizacion_id'],
+            'tipo_destinatario' => 'paciente',
+            'destinatario_id' => $pacienteId,
+            'tipo_notificacion' => 'nuevo_documento',
+            'canal' => 'whatsapp',
+            'titulo' => 'Nuevo documento en tu expediente',
+            'cuerpo' => 'Se ha subido un documento a tu expediente: ' . $titulo . '. Puedes verlo en tu portal de paciente.',
+        ]);
+
         Session::flashSuccess('Documento "' . $titulo . '" subido correctamente.');
         $response->redirectTo('/panel/pacientes/' . $pacienteId . '/expediente');
     }

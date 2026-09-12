@@ -143,8 +143,13 @@ class Horario
             return false;
         }
 
+        $ini = strtotime($horaInicio);
+        $fin = strtotime($horaFin);
+
         foreach ($franjas as $f) {
-            if ($horaInicio >= $f['hora_inicio'] && $horaFin <= $f['hora_fin']) {
+            $fIni = strtotime($f['hora_inicio']);
+            $fFin = strtotime($f['hora_fin']);
+            if ($ini >= $fIni && $fin <= $fFin) {
                 return true;
             }
         }

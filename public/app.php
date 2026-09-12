@@ -129,6 +129,7 @@ require_once __DIR__ . '/../app/Modules/Bloqueos/Controllers/BloqueoController.p
 require_once __DIR__ . '/../app/Modules/Panel/Controllers/GananciaController.php';
 require_once __DIR__ . '/../app/Modules/Horarios/Models/Horario.php';
 require_once __DIR__ . '/../app/Modules/Horarios/Controllers/HorarioController.php';
+require_once __DIR__ . '/../app/Modules/Panel/Controllers/MiPerfilController.php';
 require_once __DIR__ . '/../app/Modules/Panel/Controllers/MiPanelController.php';
 require_once __DIR__ . '/../app/Modules/Consultorios/Models/Consultorio.php';
 require_once __DIR__ . '/../app/Modules/Consultorios/Controllers/ConsultorioController.php';
@@ -178,4 +179,6 @@ if (file_exists($routesFile)) {
 // ============================================================================
 // DESPACHAR
 // ============================================================================
+require_once __DIR__ . '/../app/Modules/Notificaciones/Models/Notificacion.php';
+require_once __DIR__ . '/../app/Modules/Notificaciones/Controllers/NotificacionController.php';
 $router->dispatch();

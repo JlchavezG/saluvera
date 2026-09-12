@@ -207,6 +207,22 @@ $router->group(['prefix' => '/panel/mis-horarios', 'middlewares' => ['AuthMiddle
     $router->post('/{id}/eliminar', [HorarioController::class, 'delete']);
 });
 // ============================================================================
+// MI PERFIL (datos personales + profesionales + contrasena)
+// ============================================================================
+$router->group(['prefix' => '/panel/mi-perfil', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [MiPerfilController::class, 'edit']);
+    $router->post('/', [MiPerfilController::class, 'update']);
+});
+// ============================================================================
+// CENTRO DE NOTIFICACIONES (WhatsApp click-to-send + portal)
+// ============================================================================
+$router->group(['prefix' => '/panel/notificaciones', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [NotificacionController::class, 'index']);
+    $router->get('/{id}/whatsapp', [NotificacionController::class, 'enviarWhatsApp']);
+    $router->post('/{id}/enviada', [NotificacionController::class, 'marcarEnviada']);
+    $router->post('/{id}/eliminar', [NotificacionController::class, 'delete']);
+});
+// ============================================================================
 // APIS
 // ============================================================================
 $router->get('/api/status', function ($request, $response) {

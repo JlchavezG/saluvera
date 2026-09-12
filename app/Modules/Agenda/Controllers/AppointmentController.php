@@ -374,7 +374,7 @@ class AppointmentController
         if (!$horarioModel->dentroDeHorario($data['profesional_id'], $data['fecha_cita'], $horaInicio, $horaFin)) {
             $franjas = $horarioModel->franjasActivasDeFecha($data['profesional_id'], $data['fecha_cita']);
             if (empty($franjas)) {
-                $msg = 'El profesional no atiende ese dia de la semana. Revisa sus horarios.';
+                $msg = 'El profesional no tiene horario activo para el ' . Horario::nombreDia((int) date('N', strtotime($data['fecha_cita']))) . '. Revisa sus horarios en el modulo Horarios.';
             } else {
                 $msg = 'Fuera del horario de atencion. Franjas de ese dia: ';
                 foreach ($franjas as $fr) {
@@ -450,6 +450,34 @@ class AppointmentController
         }
 
         $this->model->updateEstado($id, $nuevoEstado, $extra);
+
+        // Notificacion automatica al paciente (WhatsApp + portal)
+        $mapaNotif = ['confirmada' => 'confirmacion_cita', 'cancelada' => 'cancelacion_cita'];
+        if (isset($mapaNotif[$nuevoEstado])) {
+            $notModel = new Notificacion();
+            $tipo = $mapaNotif[$nuevoEstado];
+            $fechaTxt = date('d/m/Y', strtotime($cita['fecha_cita']));
+            $horaTxt = substr($cita['hora_inicio'], 0, 5);
+
+            if ($tipo === 'confirmacion_cita') {
+                $titulo = 'Cita confirmada';
+                $cuerpo = "Hola, tu cita del {$fechaTxt} a las {$horaTxt} ha sido CONFIRMADA. Te esperamos.";
+            } else {
+                $titulo = 'Cita cancelada';
+                $cuerpo = "Hola, tu cita del {$fechaTxt} a las {$horaTxt} ha sido CANCELADA. Contacta a la clinica para reagendar.";
+            }
+
+            $notModel->crear([
+                'organizacion_id' => (int) $cita['organizacion_id'],
+                'tipo_destinatario' => 'paciente',
+                'destinatario_id' => (int) $cita['paciente_id'],
+                'tipo_notificacion' => $tipo,
+                'canal' => 'whatsapp',
+                'titulo' => $titulo,
+                'cuerpo' => $cuerpo,
+                'datos' => json_encode(['cita_id' => (int) $cita['id']]),
+            ]);
+        }
 
         Session::flashSuccess('Cita actualizada a "' . (Cita::estados()[$nuevoEstado] ?? $nuevoEstado) . '".');
         $response->redirectTo('/panel/agenda');
