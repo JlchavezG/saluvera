@@ -10,6 +10,7 @@ define('SALUVERA_APP', true);
 error_reporting(E_ALL);
 
 $appConfig = require __DIR__ . '/../app/Config/app.php';
+require_once __DIR__ . '/../app/Config/maps.php';
 
 if ($appConfig['debug'] ?? false) {
     ini_set('display_errors', '1');
@@ -107,9 +108,31 @@ require_once __DIR__ . '/../app/Modules/Auth/Controllers/AuthController.php';
 require_once __DIR__ . '/../app/Middleware/AuthMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/GuestMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/RoleMiddleware.php';
+require_once __DIR__ . '/../app/Middleware/AdminMiddleware.php';
 require_once __DIR__ . '/../app/Modules/Panel/Controllers/DashboardController.php';
 require_once __DIR__ . '/../app/Modules/Pacientes/Models/Paciente.php';
 require_once __DIR__ . '/../app/Modules/Pacientes/Controllers/PatientController.php';
+require_once __DIR__ . '/../app/Modules/Profesionales/Models/Profesional.php';
+require_once __DIR__ . '/../app/Modules/Profesionales/Controllers/ProfessionalController.php';
+require_once __DIR__ . '/../app/Modules/Agenda/Models/Cita.php';
+require_once __DIR__ . '/../app/Modules/Agenda/Controllers/AppointmentController.php';
+require_once __DIR__ . '/../app/Modules/Expediente/Models/Expediente.php';
+require_once __DIR__ . '/../app/Modules/Expediente/Models/Consulta.php';
+require_once __DIR__ . '/../app/Modules/Expediente/Controllers/ExpedienteController.php';
+require_once __DIR__ . '/../app/Modules/Expediente/Controllers/ConsultaController.php';
+require_once __DIR__ . '/../app/Modules/Documentos/Models/Documento.php';
+require_once __DIR__ . '/../app/Modules/Documentos/Controllers/DocumentoController.php';
+require_once __DIR__ . '/../app/Middleware/PortalMiddleware.php';
+require_once __DIR__ . '/../app/Modules/Portal/Controllers/PortalController.php';
+require_once __DIR__ . '/../app/Modules/Bloqueos/Models/BloqueoAgenda.php';
+require_once __DIR__ . '/../app/Modules/Bloqueos/Controllers/BloqueoController.php';
+require_once __DIR__ . '/../app/Modules/Panel/Controllers/GananciaController.php';
+require_once __DIR__ . '/../app/Modules/Panel/Controllers/MiPanelController.php';
+require_once __DIR__ . '/../app/Modules/Consultorios/Models/Consultorio.php';
+require_once __DIR__ . '/../app/Modules/Consultorios/Controllers/ConsultorioController.php';
+require_once __DIR__ . '/../app/Modules/Organizaciones/Models/Organizacion.php';
+require_once __DIR__ . '/../app/Modules/Organizaciones/Controllers/OrganizacionController.php';
+require_once __DIR__ . '/../app/Modules/Organizaciones/Controllers/OrganizationAdminController.php';
 
 // ============================================================================
 // ZONA HORARIA Y SESION

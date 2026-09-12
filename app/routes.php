@@ -2,7 +2,7 @@
 /**
  * SALUVERA - Archivo de Rutas
  *
- * @version 2.6.0
+ * @version 2.9.0
  */
 
 if (!defined('SALUVERA_APP')) {
@@ -36,43 +36,165 @@ $router->group(['prefix' => '', 'middlewares' => ['GuestMiddleware']], function 
 $router->get('/logout', [AuthController::class, 'logout']);
 
 // ============================================================================
-// PANEL
+// DASHBOARD ADMINISTRATIVO (solo superadmin y clinic_admin)
 // ============================================================================
-$router->group(['prefix' => '/panel', 'middlewares' => ['AuthMiddleware']], function ($router) {
+$router->group(['prefix' => '/panel', 'middlewares' => ['AdminMiddleware']], function ($router) {
     $router->get('/', [DashboardController::class, 'index']);
 });
 
 // ============================================================================
-// MODULO PACIENTES
+// MI PANEL (solo professional)
+// ============================================================================
+$router->group(['prefix' => '/panel/mi-panel', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [MiPanelController::class, 'index']);
+});
+
+// ============================================================================
+// MODULO PACIENTES (con alcance por rol dentro del controller)
 // ============================================================================
 $router->group(['prefix' => '/panel/pacientes', 'middlewares' => ['AuthMiddleware']], function ($router) {
     $router->get('/', [PatientController::class, 'index']);
     $router->get('/nuevo', [PatientController::class, 'create']);
     $router->post('/', [PatientController::class, 'store']);
+    $router->get('/{id}/editar', [PatientController::class, 'edit']);
+    $router->post('/{id}/editar', [PatientController::class, 'update']);
+    $router->post('/{id}/eliminar', [PatientController::class, 'delete']);
+    $router->post('/{id}/reactivar', [PatientController::class, 'restore']);
 });
 
 // ============================================================================
-// OTROS MODULOS (placeholders temporales)
+// MODULO PROFESIONALES (solo admins)
+// ============================================================================
+$router->group(['prefix' => '/panel/profesionales', 'middlewares' => ['AdminMiddleware']], function ($router) {
+    $router->get('/', [ProfessionalController::class, 'index']);
+    $router->get('/nuevo', [ProfessionalController::class, 'create']);
+    $router->post('/', [ProfessionalController::class, 'store']);
+    $router->get('/{id}/editar', [ProfessionalController::class, 'edit']);
+    $router->post('/{id}/editar', [ProfessionalController::class, 'update']);
+    $router->post('/{id}/eliminar', [ProfessionalController::class, 'delete']);
+    $router->post('/{id}/reactivar', [ProfessionalController::class, 'restore']);
+});
+
+// ============================================================================
+// MODULO CONSULTORIOS (solo admins)
+// ============================================================================
+$router->group(['prefix' => '/panel/consultorios', 'middlewares' => ['AdminMiddleware']], function ($router) {
+    $router->get('/', [ConsultorioController::class, 'index']);
+    $router->get('/nuevo', [ConsultorioController::class, 'create']);
+    $router->post('/', [ConsultorioController::class, 'store']);
+    $router->get('/{id}/editar', [ConsultorioController::class, 'edit']);
+    $router->post('/{id}/editar', [ConsultorioController::class, 'update']);
+    $router->post('/{id}/eliminar', [ConsultorioController::class, 'delete']);
+    $router->post('/{id}/reactivar', [ConsultorioController::class, 'restore']);
+});
+// ============================================================================
+// MODULO ORGANIZACION (solo admins)
+// ============================================================================
+$router->group(['prefix' => '/panel/organizacion', 'middlewares' => ['AdminMiddleware']], function ($router) {
+    $router->get('/', [OrganizacionController::class, 'show']);
+    $router->get('/editar', [OrganizacionController::class, 'edit']);
+    $router->post('/editar', [OrganizacionController::class, 'update']);
+});
+// ============================================================================
+// GESTION DE ORGANIZACIONES (solo superadmin)
+// ============================================================================
+$router->group(['prefix' => '/panel/organizaciones', 'middlewares' => ['AdminMiddleware']], function ($router) {
+    $router->get('/', [OrganizationAdminController::class, 'index']);
+    $router->get('/nueva', [OrganizationAdminController::class, 'create']);
+    $router->post('/', [OrganizationAdminController::class, 'store']);
+    $router->get('/{id}/editar', [OrganizationAdminController::class, 'edit']);
+    $router->post('/{id}/editar', [OrganizationAdminController::class, 'update']);
+    $router->post('/{id}/suspender', [OrganizationAdminController::class, 'suspender']);
+    $router->post('/{id}/activar', [OrganizationAdminController::class, 'activar']);
+});
+// ============================================================================
+// OTROS MODULOS (placeholders)
 // ============================================================================
 $router->group(['prefix' => '/panel', 'middlewares' => ['AuthMiddleware']], function ($router) {
-    $modulos = [
-        '/agenda' => 'Agenda',
-        '/profesionales' => 'Profesionales',
-        '/configuracion' => 'Configuracion',
-    ];
+    });
 
-    foreach ($modulos as $path => $nombre) {
-        $router->get($path, function ($request, $response) use ($nombre) {
-            $content = View::render('Pages.placeholder', ['modulo' => $nombre]);
-            $html = View::render('Layouts.panel', [
-                'pageTitle' => $nombre,
-                'content' => $content,
-            ]);
-            $response->html($html);
-        });
-    }
+$router->group(['prefix' => '/panel', 'middlewares' => ['AdminMiddleware']], function ($router) {
+    $router->get('/configuracion', function ($request, $response) {
+        $content = View::render('Pages.placeholder', ['modulo' => 'Configuracion']);
+        $html = View::render('Layouts.panel', ['pageTitle' => 'Configuracion', 'content' => $content]);
+        $response->html($html);
+    });
 });
 
+// ============================================================================
+// MODULO AGENDA (citas) con alcance por rol
+// ============================================================================
+$router->group(['prefix' => '/panel/agenda', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [AppointmentController::class, 'index']);
+    $router->get('/nueva', [AppointmentController::class, 'create']);
+    $router->post('/', [AppointmentController::class, 'store']);
+    $router->post('/{id}/estado/{estado}', [AppointmentController::class, 'cambiarEstado']);
+});
+// ============================================================================
+// MODULO EXPEDIENTE CLINICO (consultas, diagnosticos, tratamientos)
+// ============================================================================
+$router->group(['prefix' => '/panel', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    // Expediente del paciente (antecedentes + timeline)
+    $router->get('/pacientes/{id}/expediente', [ExpedienteController::class, 'show']);
+    $router->get('/pacientes/{id}/expediente/editar', [ExpedienteController::class, 'edit']);
+    $router->post('/pacientes/{id}/expediente/editar', [ExpedienteController::class, 'update']);
+
+    // Consultas medicas (nota SOAP)
+    $router->get('/citas/{id}/consulta/nueva', [ConsultaController::class, 'createDesdeCita']);
+    $router->get('/pacientes/{id}/consulta/nueva', [ConsultaController::class, 'create']);
+    $router->post('/consultas', [ConsultaController::class, 'store']);
+    $router->get('/consultas/{id}/editar', [ConsultaController::class, 'edit']);
+    $router->post('/consultas/{id}/editar', [ConsultaController::class, 'update']);
+    $router->post('/consultas/{id}/firmar', [ConsultaController::class, 'firmar']);
+
+    // Diagnosticos y tratamientos de una consulta
+    $router->post('/consultas/{id}/diagnosticos', [ConsultaController::class, 'storeDiagnostico']);
+    $router->post('/consultas/{id}/tratamientos', [ConsultaController::class, 'storeTratamiento']);
+});
+// ============================================================================
+// MODULO DOCUMENTOS DEL PACIENTE
+// ============================================================================
+$router->group(['prefix' => '/panel', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/pacientes/{id}/documentos/nuevo', [DocumentoController::class, 'create']);
+    $router->post('/pacientes/{id}/documentos/nuevo', [DocumentoController::class, 'store']);
+    $router->get('/documentos/{id}/ver', [DocumentoController::class, 'descargar']);
+    $router->post('/documentos/{id}/eliminar', [DocumentoController::class, 'delete']);
+});
+// ============================================================================
+// PORTAL DEL PACIENTE (acceso por token, sesion propia)
+// ============================================================================
+$router->get('/portal/acceso/{token}', [PortalController::class, 'acceso']);
+
+$router->group(['prefix' => '/portal', 'middlewares' => ['PortalMiddleware']], function ($router) {
+    $router->get('/inicio', [PortalController::class, 'inicio']);
+    $router->get('/citas', [PortalController::class, 'citas']);
+    $router->get('/expediente', [PortalController::class, 'expediente']);
+    $router->get('/documentos', [PortalController::class, 'documentos']);
+    $router->get('/documentos/{id}/ver', [PortalController::class, 'verDocumento']);
+    $router->get('/salir', [PortalController::class, 'salir']);
+});
+
+// Generar enlace de acceso desde el panel
+$router->group(['prefix' => '/panel/pacientes', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->post('/{id}/portal-acceso', [PortalController::class, 'generarAcceso']);
+});
+// ============================================================================
+// MODULO BLOQUEOS DE AGENDA (dias no disponibles por profesional)
+// ============================================================================
+$router->group(['prefix' => '/panel/bloqueos', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [BloqueoController::class, 'index']);
+    $router->get('/nuevo', [BloqueoController::class, 'create']);
+    $router->post('/', [BloqueoController::class, 'store']);
+    $router->get('/{id}/editar', [BloqueoController::class, 'edit']);
+    $router->post('/{id}/editar', [BloqueoController::class, 'update']);
+    $router->post('/{id}/eliminar', [BloqueoController::class, 'delete']);
+});
+// ============================================================================
+// BALANCE DE GANANCIAS DEL PROFESIONAL
+// ============================================================================
+$router->group(['prefix' => '/panel/mis-ganancias', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [GananciaController::class, 'index']);
+});
 // ============================================================================
 // APIS
 // ============================================================================

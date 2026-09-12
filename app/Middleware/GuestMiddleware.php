@@ -8,12 +8,19 @@ class GuestMiddleware
 {
     public function handle(Request $request, Response $response): bool
     {
-        // Si ya hay sesion activa, redirigir al panel
         if (Session::isAuthenticated()) {
             $user = Session::user();
-            $rolSlug = $user['rol_slug'] ?? 'patient';
+            $rolSlug = $user['rol_slug'] ?? '';
 
-            $route = ($rolSlug === 'patient') ? '/portal' : '/panel';
+            $routes = [
+                'superadmin' => '/panel',
+                'clinic_admin' => '/panel',
+                'professional' => '/panel/mi-panel',
+                'receptionist' => '/panel/agenda',
+                'patient' => '/portal',
+            ];
+
+            $route = $routes[$rolSlug] ?? '/panel';
             $response->redirectTo($route);
             return false;
         }

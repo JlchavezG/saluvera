@@ -137,8 +137,8 @@ class AuthController
         $routes = [
             'superadmin' => '/panel',
             'clinic_admin' => '/panel',
-            'professional' => '/panel',
-            'receptionist' => '/panel',
+            'professional' => '/panel/mi-panel',
+            'receptionist' => '/panel/agenda',
             'patient' => '/portal',
         ];
 
