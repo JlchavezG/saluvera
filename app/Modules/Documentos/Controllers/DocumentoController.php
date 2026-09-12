@@ -203,6 +203,9 @@ class DocumentoController
         ]);
 
         // Notificacion automatica al paciente (WhatsApp + portal)
+        $dbTmp = Database::getInstance();
+        $orgRowDoc = $dbTmp->fetchOne("SELECT nombre FROM organizaciones WHERE id = ?", [(int) $paciente['organizacion_id']]);
+        $orgNombreDoc = $orgRowDoc['nombre'] ?? 'la clinica';
         $notModel = new Notificacion();
         $notModel->crear([
             'organizacion_id' => (int) $paciente['organizacion_id'],
@@ -211,7 +214,7 @@ class DocumentoController
             'tipo_notificacion' => 'nuevo_documento',
             'canal' => 'whatsapp',
             'titulo' => 'Nuevo documento en tu expediente',
-            'cuerpo' => 'Se ha subido un documento a tu expediente: ' . $titulo . '. Puedes verlo en tu portal de paciente.',
+            'cuerpo' => $orgNombreDoc . ' ha subido un documento a tu expediente: ' . $titulo . '. Puedes verlo en tu portal de paciente.',
         ]);
 
         Session::flashSuccess('Documento "' . $titulo . '" subido correctamente.');

@@ -50,7 +50,7 @@ class GananciaController
 
         // Rango filtrado (default: mes actual)
         $desde = trim((string) $request->input('desde', date('Y-m-01')));
-        $hasta = trim((string) $request->input('hasta', date('Y-m-d')));
+        $hasta = trim((string) $request->input('hasta', date('Y-m-t')));
 
         $rango = $this->citas->gananciasProfesional($profId, $desde, $hasta);
         $mesActual = $this->citas->gananciasProfesional($profId, date('Y-m-01'), date('Y-m-t'));

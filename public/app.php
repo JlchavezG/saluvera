@@ -6,6 +6,7 @@
  */
 
 define('SALUVERA_APP', true);
+require_once __DIR__ . '/../app/Services/ExcelExport.php';
 
 error_reporting(E_ALL);
 
@@ -181,4 +182,6 @@ if (file_exists($routesFile)) {
 // ============================================================================
 require_once __DIR__ . '/../app/Modules/Notificaciones/Models/Notificacion.php';
 require_once __DIR__ . '/../app/Modules/Notificaciones/Controllers/NotificacionController.php';
+require_once __DIR__ . '/../app/Modules/Reportes/Models/Reporte.php';
+require_once __DIR__ . '/../app/Modules/Reportes/Controllers/ReporteController.php';
 $router->dispatch();

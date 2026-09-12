@@ -179,9 +179,11 @@ class Notificacion
 
         $citas = $this->db->fetchAll(
             "SELECT c.id, c.paciente_id, c.fecha_cita, c.hora_inicio,
-                    p.nombre as pac_nombre, p.apellidos as pac_apellidos
+                    p.nombre as pac_nombre, p.apellidos as pac_apellidos,
+                    o.nombre as org_nombre
              FROM citas c
              INNER JOIN pacientes p ON c.paciente_id = p.id
+             INNER JOIN organizaciones o ON c.organizacion_id = o.id
              WHERE c.organizacion_id = ? AND c.fecha_cita = ?
                AND c.estado IN ('pendiente', 'confirmada')",
             [$orgId, $manana]
@@ -202,6 +204,7 @@ class Notificacion
                 'titulo' => 'Recordatorio de cita',
                 'cuerpo' => 'Hola ' . $c['pac_nombre'] . ', te recordamos tu cita de manana '
                     . date('d/m/Y', strtotime($manana)) . ' a las ' . substr($c['hora_inicio'], 0, 5)
+                    . ' en ' . ($c['org_nombre'] ?? 'la clinica')
                     . '. Si no puedes asistir, avisanos con tiempo.',
                 'datos' => json_encode(['cita_id' => (int) $c['id']]),
             ]);

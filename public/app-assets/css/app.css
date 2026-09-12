@@ -3930,3 +3930,38 @@ body:not(.montos-ocultos) .btn-toggle-montos .icono-ojo-cerrado {
 [data-theme="dark"] .portal-notif-cuerpo {
     color: #D3E3E0;
 }
+
+/* ============================================
+   47. REPORTES
+   ============================================ */
+.reportes-chart-card {
+    padding: 20px;
+}
+
+.reportes-chart-card canvas {
+    max-height: 320px;
+}
+
+.search-form span#fechasCustom {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ============================================
+   FIX-SIDEBAR-SUPERADMIN: scroll con muchos items
+   ============================================ */
+.panel-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+.panel-sidebar .sidebar-nav {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+.panel-sidebar .sidebar-user {
+    flex-shrink: 0;
+}

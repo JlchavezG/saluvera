@@ -3,12 +3,6 @@
     "description": "Sistema integral de gestion para profesionales de la salud",
     "type": "project",
     "license": "proprietary",
-    "authors": [
-        {
-            "name": "SALUVERA",
-            "email": "contacto@saluvera.com"
-        }
-    ],
     "require": {
         "php": ">=8.1"
     },
@@ -23,14 +17,8 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "sort-packages": true,
-        "preferred-install": "dist"
+        "sort-packages": true
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "scripts": {
-        "post-autoload-dump": [
-            "@php -r \"echo 'Autoloader generado correctamente';\""
-        ]
-    }
+    "prefer-stable": true
 }

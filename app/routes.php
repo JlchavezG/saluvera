@@ -223,6 +223,13 @@ $router->group(['prefix' => '/panel/notificaciones', 'middlewares' => ['AuthMidd
     $router->post('/{id}/eliminar', [NotificacionController::class, 'delete']);
 });
 // ============================================================================
+// REPORTES (profesional / organizacion / global)
+// ============================================================================
+$router->group(['prefix' => '/panel/reportes', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [ReporteController::class, 'index']);
+    $router->get('/exportar', [ReporteController::class, 'exportar']);
+});
+// ============================================================================
 // APIS
 // ============================================================================
 $router->get('/api/status', function ($request, $response) {

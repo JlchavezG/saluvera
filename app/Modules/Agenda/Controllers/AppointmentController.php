@@ -454,6 +454,9 @@ class AppointmentController
         // Notificacion automatica al paciente (WhatsApp + portal)
         $mapaNotif = ['confirmada' => 'confirmacion_cita', 'cancelada' => 'cancelacion_cita'];
         if (isset($mapaNotif[$nuevoEstado])) {
+            $dbTmp = Database::getInstance();
+            $orgRow = $dbTmp->fetchOne("SELECT nombre FROM organizaciones WHERE id = ?", [(int) $cita['organizacion_id']]);
+            $orgNombre = $orgRow['nombre'] ?? 'la clinica';
             $notModel = new Notificacion();
             $tipo = $mapaNotif[$nuevoEstado];
             $fechaTxt = date('d/m/Y', strtotime($cita['fecha_cita']));
@@ -461,10 +464,10 @@ class AppointmentController
 
             if ($tipo === 'confirmacion_cita') {
                 $titulo = 'Cita confirmada';
-                $cuerpo = "Hola, tu cita del {$fechaTxt} a las {$horaTxt} ha sido CONFIRMADA. Te esperamos.";
+                $cuerpo = "Hola, tu cita del {$fechaTxt} a las {$horaTxt} en {$orgNombre} ha sido CONFIRMADA. Te esperamos.";
             } else {
                 $titulo = 'Cita cancelada';
-                $cuerpo = "Hola, tu cita del {$fechaTxt} a las {$horaTxt} ha sido CANCELADA. Contacta a la clinica para reagendar.";
+                $cuerpo = "Hola, tu cita del {$fechaTxt} a las {$horaTxt} en {$orgNombre} ha sido CANCELADA. Contacta a la clinica para reagendar.";
             }
 
             $notModel->crear([

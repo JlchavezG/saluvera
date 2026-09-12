@@ -149,6 +149,13 @@ function navActive(string $currentPath, string $route): string {
                     <span class="nav-label">Notificaciones</span>
                 </a>
 
+                <a href="<?= url('/panel/reportes') ?>" class="nav-item<?= navActive($currentPath, '/panel/reportes') ?>" title="Reportes">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    <span class="nav-label">Reportes</span>
+                </a>
+
                 <?php if ($esAdmin): ?>
                     <div class="nav-section-title">Administracion</div>
 
