@@ -369,6 +369,23 @@ class AppointmentController
             $response->redirectTo('/panel/agenda/nueva');
         }
 
+        // Validar que la cita caiga dentro del horario de atencion del profesional
+        $horarioModel = new Horario();
+        if (!$horarioModel->dentroDeHorario($data['profesional_id'], $data['fecha_cita'], $horaInicio, $horaFin)) {
+            $franjas = $horarioModel->franjasActivasDeFecha($data['profesional_id'], $data['fecha_cita']);
+            if (empty($franjas)) {
+                $msg = 'El profesional no atiende ese dia de la semana. Revisa sus horarios.';
+            } else {
+                $msg = 'Fuera del horario de atencion. Franjas de ese dia: ';
+                foreach ($franjas as $fr) {
+                    $msg .= substr($fr['hora_inicio'], 0, 5) . '-' . substr($fr['hora_fin'], 0, 5) . '  ';
+                }
+            }
+            Session::flash('form_errors', ['hora_inicio' => [$msg]]);
+            Session::flash('form_old', $data);
+            $response->redirectTo('/panel/agenda/nueva');
+        }
+
         // Validar empalme
         if ($this->model->hayEmpalme($data['profesional_id'], $data['fecha_cita'], $horaInicio, $horaFin)) {
             Session::flash('form_errors', ['hora_inicio' => ['El profesional ya tiene una cita en ese horario. Elige otro horario.']]);

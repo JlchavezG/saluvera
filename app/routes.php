@@ -196,6 +196,17 @@ $router->group(['prefix' => '/panel/mis-ganancias', 'middlewares' => ['AuthMiddl
     $router->get('/', [GananciaController::class, 'index']);
 });
 // ============================================================================
+// MODULO HORARIOS DE ATENCION
+// ============================================================================
+$router->group(['prefix' => '/panel/mis-horarios', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [HorarioController::class, 'index']);
+    $router->get('/nuevo', [HorarioController::class, 'create']);
+    $router->post('/', [HorarioController::class, 'store']);
+    $router->get('/{id}/editar', [HorarioController::class, 'edit']);
+    $router->post('/{id}/editar', [HorarioController::class, 'update']);
+    $router->post('/{id}/eliminar', [HorarioController::class, 'delete']);
+});
+// ============================================================================
 // APIS
 // ============================================================================
 $router->get('/api/status', function ($request, $response) {

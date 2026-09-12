@@ -16,7 +16,7 @@ class Cita
     private function baseSelect(): string
     {
         return "SELECT c.id, c.organizacion_id, c.paciente_id, c.profesional_id, c.consultorio_id,
-                       c.fecha_cita, c.hora_inicio, c.hora_fin, c.estado, c.motivo,
+                       c.fecha_cita, c.hora_inicio, c.hora_fin, c.estado, c.monto_consulta, c.motivo,
                        c.motivo_cancelacion, c.creado_en,
                        p.nombre as paciente_nombre, p.apellidos as paciente_apellidos,
                        pr.id as prof_id, u.nombre as prof_nombre, u.apellidos as prof_apellidos,

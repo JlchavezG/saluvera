@@ -3806,3 +3806,35 @@ table .form-label {
     display: inline;
     margin: 0 6px 0 10px;
 }
+
+/* ============================================
+   44. MODO PRIVADO DE GANANCIAS
+   ============================================ */
+.btn-toggle-montos {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-toggle-montos svg {
+    width: 16px;
+    height: 16px;
+}
+
+body.montos-ocultos .btn-toggle-montos .icono-ojo-abierto {
+    display: none;
+}
+
+body:not(.montos-ocultos) .btn-toggle-montos .icono-ojo-cerrado {
+    display: none;
+}
+
+.btn-toggle-montos.active {
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.monto-valor {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}

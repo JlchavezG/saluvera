@@ -127,6 +127,8 @@ require_once __DIR__ . '/../app/Modules/Portal/Controllers/PortalController.php'
 require_once __DIR__ . '/../app/Modules/Bloqueos/Models/BloqueoAgenda.php';
 require_once __DIR__ . '/../app/Modules/Bloqueos/Controllers/BloqueoController.php';
 require_once __DIR__ . '/../app/Modules/Panel/Controllers/GananciaController.php';
+require_once __DIR__ . '/../app/Modules/Horarios/Models/Horario.php';
+require_once __DIR__ . '/../app/Modules/Horarios/Controllers/HorarioController.php';
 require_once __DIR__ . '/../app/Modules/Panel/Controllers/MiPanelController.php';
 require_once __DIR__ . '/../app/Modules/Consultorios/Models/Consultorio.php';
 require_once __DIR__ . '/../app/Modules/Consultorios/Controllers/ConsultorioController.php';
