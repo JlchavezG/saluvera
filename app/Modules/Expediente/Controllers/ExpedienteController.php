@@ -86,6 +86,13 @@ class ExpedienteController
 
         $profFiltro = $this->rol() === 'professional' ? $this->miProfesionalId() : null;
 
+        // Reportes clínicos del paciente (solo profesionales ven la sección)
+        $reportesClinicos = [];
+        if ($this->rol() === 'professional') {
+            $reportesModel = new ReportePaciente();
+            $reportesClinicos = $reportesModel->listarPorPaciente($id);
+        }
+
         $content = View::render('Pages/expediente/show', [
             'paciente' => $paciente,
             'expediente' => $this->model->findByPaciente($id),
@@ -94,6 +101,7 @@ class ExpedienteController
             'tratamientos' => $this->model->tratamientosActivos($id),
             'rol' => $this->rol(),
             'documentos' => $this->documentos->findByPaciente($id, (int) $paciente['organizacion_id']),
+            'reportesClinicos' => $reportesClinicos,
         ]);
 
         $html = View::render('Layouts.panel', [

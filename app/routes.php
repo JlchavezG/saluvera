@@ -214,6 +214,8 @@ $router->group(['prefix' => '/panel/mis-horarios', 'middlewares' => ['AuthMiddle
 $router->group(['prefix' => '/panel/mi-perfil', 'middlewares' => ['AuthMiddleware']], function ($router) {
     $router->get('/', [MiPerfilController::class, 'edit']);
     $router->post('/', [MiPerfilController::class, 'update']);
+    $router->post('/firma', [MiPerfilController::class, 'guardarFirma']);
+    $router->post('/firma/eliminar', [MiPerfilController::class, 'eliminarFirma']);
 });
 // ============================================================================
 // CENTRO DE NOTIFICACIONES (WhatsApp click-to-send + portal)

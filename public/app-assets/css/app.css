@@ -5338,3 +5338,334 @@ body:not(.montos-ocultos) .btn-toggle-montos .icono-ojo-cerrado {
     justify-content: flex-end;
     gap: 10px;
 }
+/* ============================================
+   FILTRO-ESPECIALIDADES: Selector para admin
+   ============================================ */
+.filtro-especialidades {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 12px 16px;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    flex-wrap: wrap;
+}
+
+.filtro-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-charcoal);
+}
+
+.filtro-label svg {
+    color: var(--color-salu-mint);
+}
+
+.filtro-select {
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--color-ink);
+    background: var(--color-white);
+    cursor: pointer;
+    min-width: 220px;
+    transition: border-color 0.2s ease;
+}
+
+.filtro-select:hover,
+.filtro-select:focus {
+    border-color: var(--color-salu-mint);
+    outline: none;
+}
+
+.plantilla-esp-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-teal-dark);
+    background: var(--color-mint-soft);
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+/* ============================================
+   FIRMA-MANUSCRITA: Modal y seccion de perfil
+   ============================================ */
+.firma-manuscrita-seccion {
+    margin-top: 20px;
+}
+
+.firma-seccion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.firma-seccion-titulo {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: var(--color-midnight-teal);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.firma-seccion-titulo svg {
+    color: var(--color-teal);
+}
+
+.firma-seccion-subtitulo {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-muted);
+}
+
+.firma-preview-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.firma-preview-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-muted);
+}
+
+.firma-preview-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px 24px;
+    min-width: 240px;
+    min-height: 80px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-image:
+        linear-gradient(45deg, #f7f8f6 25%, transparent 25%),
+        linear-gradient(-45deg, #f7f8f6 25%, transparent 25%);
+    background-size: 12px 12px;
+}
+
+.firma-preview-img {
+    max-height: 80px;
+    max-width: 100%;
+}
+
+.firma-empty-state {
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--color-muted);
+    border: 2px dashed var(--color-border);
+    border-radius: 10px;
+}
+
+.firma-empty-state svg {
+    opacity: 0.4;
+    margin-bottom: 8px;
+}
+
+.firma-empty-state p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Modal */
+.firma-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    animation: firma-modal-in 0.2s ease;
+}
+
+@keyframes firma-modal-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.firma-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 41, 49, 0.65);
+    backdrop-filter: blur(4px);
+}
+
+.firma-modal-content {
+    position: relative;
+    background: var(--color-white);
+    border-radius: var(--radius-card);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    max-width: 680px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    animation: firma-content-in 0.25s ease;
+}
+
+@keyframes firma-content-in {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.firma-modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--color-border-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.firma-modal-header h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: var(--color-midnight-teal);
+}
+
+.firma-modal-header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-muted);
+}
+
+.firma-modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-muted);
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.firma-modal-close:hover {
+    background: var(--color-warm-cloud);
+    color: var(--color-ink);
+}
+
+.firma-modal-body {
+    padding: 22px;
+    overflow-y: auto;
+}
+
+.firma-canvas {
+    display: block;
+    width: 100%;
+    height: 200px;
+    border: 2px solid var(--color-border);
+    border-radius: 10px;
+    background: #FFFFFF;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.firma-toolbar {
+    margin-top: 14px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.firma-toolbar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.firma-toolbar-group label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-muted);
+}
+
+.firma-colors,
+.firma-sizes {
+    display: flex;
+    gap: 6px;
+}
+
+.firma-color-btn,
+.firma-size-btn {
+    background: var(--color-white);
+    border: 2px solid var(--color-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.firma-color-btn:hover,
+.firma-size-btn:hover {
+    border-color: var(--color-salu-mint);
+}
+
+.firma-color-btn.active,
+.firma-size-btn.active {
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 2px rgba(31, 89, 100, 0.15);
+}
+
+.firma-size-btn span {
+    display: block;
+    border-radius: 50%;
+    background: var(--color-midnight-teal);
+}
+
+.firma-toolbar-actions {
+    margin-left: auto;
+}
+
+.firma-modal-footer {
+    padding: 16px 22px;
+    border-top: 1px solid var(--color-border-soft);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background: var(--color-warm-cloud);
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+
+.firma-modal-footer .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.firma-img-reporte {
+    max-height: 60px;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto 8px;
+}
+
+@media (max-width: 600px) {
+    .firma-toolbar-actions { margin-left: 0; }
+    .firma-modal-content { max-width: 100%; }
+}

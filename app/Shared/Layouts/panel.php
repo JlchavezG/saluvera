@@ -14,7 +14,7 @@ $pageTitle = $pageTitle ?? 'Panel';
 $content = $content ?? '';
 $flashMessages = Session::getFlashMessages();
 $user = Session::user() ?? [];
-$cssVersion = '2.10.0';
+$cssVersion = '3.2.1';
 
 $nombre = $user['nombre'] ?? 'Usuario';
 $apellidos = $user['apellidos'] ?? '';
@@ -133,6 +133,7 @@ function navActive(string $currentPath, string $route): string {
                     </svg>
                     <span class="nav-label">Mis Ganancias</span>
                 </a>
+                <?php endif; ?>
 
                 <?php if ($esProfesional): ?>
                 <a href="<?= url('/panel/reportes-clinicos') ?>" class="nav-item<?= navActive($currentPath, '/panel/reportes-clinicos') ?>" title="Reportes Clínicos">
@@ -141,7 +142,6 @@ function navActive(string $currentPath, string $route): string {
                     </svg>
                     <span class="nav-label">Reportes Clínicos</span>
                 </a>
-                <?php endif; ?>
                 <?php endif; ?>
 
                 <a href="<?= url('/panel/mi-perfil') ?>" class="nav-item<?= navActive($currentPath, '/panel/mi-perfil') ?>" title="Mi Perfil">

@@ -15,6 +15,8 @@ $timeline = $timeline ?? [];
 $diagnosticos = $diagnosticos ?? [];
 $tratamientos = $tratamientos ?? [];
 $documentos = $documentos ?? [];
+$reportesClinicos = $reportesClinicos ?? [];
+$rol = $rol ?? '';
 
 $nombre = trim($paciente['nombre'] . ' ' . $paciente['apellidos']);
 
@@ -68,6 +70,12 @@ if ($expediente !== null) {
     </div>
     <div class="page-header-actions">
         <a href="<?= url('/panel/pacientes/' . (int) $paciente['id'] . '/consulta/nueva') ?>" class="btn btn-primary">+ Nueva Consulta</a>
+        <?php if ($rol === 'professional'): ?>
+        <a href="<?= url('/panel/reportes-clinicos/crear?paciente_id=' . (int) $paciente['id']) ?>" class="btn btn-outline">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Crear reporte
+        </a>
+        <?php endif; ?>
         <a href="<?= url('/panel/pacientes/' . (int) $paciente['id'] . '/expediente/editar') ?>" class="btn btn-outline">Editar antecedentes</a>
         <a href="<?= url('/panel/pacientes/' . (int) $paciente['id'] . '/documentos/nuevo') ?>" class="btn btn-outline">Subir documento</a>
         <form method="POST" action="<?= url('/panel/pacientes/' . (int) $paciente['id'] . '/portal-acceso') ?>" class="inline-form">
@@ -240,6 +248,57 @@ if ($portalLink === null && !empty($paciente['portal_token']) && !empty($pacient
 <?php endif; ?>
 
 <!-- ============ LINEA DE TIEMPO ============ -->
+<?php if ($rol === 'professional'): ?>
+<div class="dash-section-title">Reportes Clínicos (<?= count($reportesClinicos) ?>)</div>
+
+<?php if (empty($reportesClinicos)): ?>
+    <div class="table-card empty-state">
+        <h3>Sin reportes clínicos</h3>
+        <p>Genera informes, certificados o evaluaciones para este paciente.</p>
+        <a href="<?= url('/panel/reportes-clinicos/crear?paciente_id=' . (int) $paciente['id']) ?>" class="btn btn-primary">Crear primer reporte</a>
+    </div>
+<?php else: ?>
+    <div class="table-card">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Título</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Portal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reportesClinicos as $r): ?>
+                        <tr>
+                            <td><?= date('d/m/Y', strtotime($r['creado_en'])) ?></td>
+                            <td><strong><?= htmlspecialchars($r['titulo']) ?></strong></td>
+                            <td><?= htmlspecialchars($r['plantilla_nombre'] ?? 'Personalizado') ?></td>
+                            <td>
+                                <span class="badge-estado <?= $r['estado'] === 'firmado' ? 'badge-completada' : ($r['estado'] === 'entregado' ? 'badge-confirmada' : 'badge-pendiente') ?>">
+                                    <?= ucfirst($r['estado']) ?>
+                                </span>
+                            </td>
+                            <td><?= (int) $r['compartido_portal'] === 1 ? '✓ Compartido' : '—' ?></td>
+                            <td>
+                                <div class="acciones-reporte">
+                                    <a href="<?= url('/panel/reportes-clinicos/ver/' . $r['id']) ?>" class="btn btn-outline btn-sm btn-accion">Ver</a>
+                                    <?php if ($r['estado'] === 'borrador'): ?>
+                                        <a href="<?= url('/panel/reportes-clinicos/editar-reporte/' . $r['id']) ?>" class="btn btn-outline btn-sm btn-accion">Editar</a>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php endif; ?>
+<?php endif; ?>
 <div class="dash-section-title">Historial de consultas (<?= count($timeline) ?>)</div>
 
 <?php if (empty($timeline)): ?>

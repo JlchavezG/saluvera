@@ -180,4 +180,108 @@ class MiPerfilController
         Session::flashSuccess('Perfil actualizado correctamente.' . ($data['password'] !== '' ? ' Contrasena cambiada.' : ''));
         $response->redirectTo('/panel/mi-perfil');
     }
+
+    // ========================================================================
+    // GUARDAR FIRMA MANUSCRITA (canvas)
+    // ========================================================================
+
+    public function guardarFirma(Request $request, Response $response): void
+    {
+        $user = Session::user();
+        if (!$user || ($user['rol_slug'] ?? '') !== 'professional') {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'error' => 'Solo profesionales']);
+            return;
+        }
+
+        $imageData = $request->input('firma_imagen', '');
+        if (empty($imageData) || strpos($imageData, 'data:image/png;base64,') !== 0) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'error' => 'Formato de imagen invalido']);
+            return;
+        }
+
+        // Buscar profesional del usuario
+        $db = Database::getInstance();
+        $prof = $db->fetchOne("SELECT id, firma FROM profesionales WHERE usuario_id = ? LIMIT 1", [$user['id']]);
+        if (!$prof) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'error' => 'No se encontro registro de profesional']);
+            return;
+        }
+
+        // Decodificar base64
+        $parts = explode(',', $imageData, 2);
+        $decoded = base64_decode($parts[1] ?? '');
+        if ($decoded === false || strlen($decoded) < 100) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'error' => 'Imagen vacia o corrupta']);
+            return;
+        }
+
+        // Validar tamano maximo (2MB)
+        if (strlen($decoded) > 2 * 1024 * 1024) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'error' => 'Imagen demasiado grande (max 2MB)']);
+            return;
+        }
+
+        // Eliminar firma anterior si existe
+        if (!empty($prof['firma'])) {
+            $pathAnterior = __DIR__ . '/../../../../storage/uploads/signatures/' . basename($prof['firma']);
+            if (file_exists($pathAnterior)) {
+                @unlink($pathAnterior);
+            }
+        }
+
+        // Generar nombre de archivo
+        $dir = __DIR__ . '/../../../../storage/uploads/signatures/';
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+        $nombre = 'prof_' . $prof['id'] . '_' . time() . '.png';
+        $path = $dir . $nombre;
+
+        if (file_put_contents($path, $decoded) === false) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'error' => 'No se pudo guardar la imagen']);
+            return;
+        }
+
+        // Actualizar BD
+        $db->update('profesionales', ['firma' => $nombre], 'id = ?', [$prof['id']]);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'ok' => true,
+            'archivo' => $nombre,
+            'url' => '/storage/uploads/signatures/' . $nombre,
+        ]);
+    }
+
+    public function eliminarFirma(Request $request, Response $response): void
+    {
+        $user = Session::user();
+        if (!$user || ($user['rol_slug'] ?? '') !== 'professional') {
+            Session::flashError('Solo profesionales');
+            $response->redirect(url('/panel/mi-perfil'));
+            return;
+        }
+
+        $db = Database::getInstance();
+        $prof = $db->fetchOne("SELECT id, firma FROM profesionales WHERE usuario_id = ? LIMIT 1", [$user['id']]);
+
+        if ($prof && !empty($prof['firma'])) {
+            $path = __DIR__ . '/../../../../storage/uploads/signatures/' . basename($prof['firma']);
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+            $db->update('profesionales', ['firma' => null], 'id = ?', [$prof['id']]);
+            Session::flashSuccess('Firma eliminada correctamente.');
+        } else {
+            Session::flashInfo('No habia firma para eliminar.');
+        }
+
+        $response->redirect(url('/panel/mi-perfil'));
+    }
 }

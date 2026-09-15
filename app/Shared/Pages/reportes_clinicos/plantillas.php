@@ -10,6 +10,8 @@ if (!defined('SALUVERA_APP')) {
 $plantillas = $plantillas ?? [];
 $tipos = $tipos ?? [];
 $esProfesional = $esProfesional ?? false;
+$esAdmin = $esAdmin ?? false;
+$especialidades = $especialidades ?? [];
 
 // Iconos SVG por tipo de plantilla
 $iconosTipo = [
@@ -35,6 +37,21 @@ $iconosTipo = [
     </a>
 </div>
 
+<?php if ($esAdmin && !empty($especialidades)): ?>
+<div class="filtro-especialidades">
+    <label class="filtro-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        Filtrar por especialidad:
+    </label>
+    <select id="filtroEspecialidad" class="filtro-select" onchange="filtrarEspecialidad(this.value)">
+        <option value="">Todas las especialidades</option>
+        <?php foreach ($especialidades as $esp): ?>
+            <option value="<?= htmlspecialchars($esp['nombre']) ?>"><?= htmlspecialchars($esp['nombre']) ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
+<?php endif; ?>
+
 <?php if (empty($plantillas)): ?>
     <div class="table-card">
         <div class="empty-state">
@@ -49,7 +66,7 @@ $iconosTipo = [
                 $estructura = json_decode($p['estructura_json'], true) ?: [];
                 $tipo = $p['tipo'] ?? 'otro';
             ?>
-            <div class="plantilla-card">
+            <div class="plantilla-card" data-especialidad="<?= htmlspecialchars($p['especialidad_nombre'] ?? 'General') ?>">
                 <div class="plantilla-card-top">
                     <div class="plantilla-icono tipo-bg-<?= htmlspecialchars($tipo) ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -66,6 +83,7 @@ $iconosTipo = [
                 <h3 class="plantilla-nombre"><?= htmlspecialchars($p['nombre']) ?></h3>
                 <p class="plantilla-descripcion"><?= htmlspecialchars($p['descripcion'] ?? '') ?></p>
 
+                <?php if ($esAdmin && !empty($p['especialidad_nombre'])): ?><div class="plantilla-esp-label"><?= htmlspecialchars($p['especialidad_nombre']) ?></div><?php endif; ?>
                 <div class="plantilla-tags">
                     <span class="plantilla-tag tipo-<?= htmlspecialchars($tipo) ?>"><?= htmlspecialchars($tipos[$tipo] ?? ucfirst($tipo)) ?></span>
                     <span class="plantilla-tag tag-neutral"><?= count($estructura['secciones'] ?? []) ?> secciones</span>
@@ -98,3 +116,15 @@ $iconosTipo = [
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
+<script>
+function filtrarEspecialidad(valor) {
+    var cards = document.querySelectorAll('.plantilla-card');
+    cards.forEach(function(card) {
+        if (valor === '' || card.getAttribute('data-especialidad') === valor) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>

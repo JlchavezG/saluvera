@@ -143,7 +143,20 @@ $reemplazarVariables = function ($texto) use ($reporte, $edad) {
         <?php endif; ?>
     </main>
 
+    <?php 
+    $firmaUrl = '';
+    if (!empty($reporte['profesional_firma'])) {
+        $firmaFile = basename($reporte['profesional_firma']);
+        $firmaPath = __DIR__ . '/../../../../storage/uploads/signatures/' . $firmaFile;
+        if (file_exists($firmaPath)) {
+            $firmaUrl = url('/storage/uploads/signatures/' . $firmaFile);
+        }
+    }
+    ?>
     <footer class="reporte-pro-footer">
+        <?php if ($firmaUrl): ?>
+            <img src="<?= htmlspecialchars($firmaUrl) ?>" alt="Firma" class="firma-img-reporte">
+        <?php endif; ?>
         <div class="reporte-pro-firma-line"></div>
         <p class="reporte-pro-firma-nombre"><?= htmlspecialchars($reporte['profesional_nombre'] ?? '') ?></p>
         <p class="reporte-pro-firma-detalle"><?= htmlspecialchars($reporte['especialidad_nombre'] ?? '') ?></p>

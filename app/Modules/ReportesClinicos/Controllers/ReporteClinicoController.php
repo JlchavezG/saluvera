@@ -44,27 +44,49 @@ class ReporteClinicoController
 
     private function orgId(): int
     {
+        // Primero intentar desde profesionales
         $profId = $this->miProfesionalId();
-        if (!$profId) {
-            return 0;
+        if ($profId) {
+            $db = Database::getInstance();
+            $prof = $db->fetchOne("SELECT organizacion_id FROM profesionales WHERE id = ?", [$profId]);
+            if ($prof && $prof['organizacion_id']) {
+                return (int) $prof['organizacion_id'];
+            }
         }
+        
+        // Si no es profesional (admin), obtener la org del usuario
         $db = Database::getInstance();
-        $prof = $db->fetchOne("SELECT organizacion_id FROM profesionales WHERE id = ?", [$profId]);
-        return $prof && $prof['organizacion_id'] ? (int) $prof['organizacion_id'] : 0;
+        $user = $db->fetchOne("SELECT organizacion_id FROM usuarios WHERE id = ?", [Session::getUserId()]);
+        return $user && $user['organizacion_id'] ? (int) $user['organizacion_id'] : 0;
+    }
+
+    private function esAdmin(): bool
+    {
+        $user = Session::user() ?? [];
+        return in_array($user['rol_slug'] ?? '', ['clinic_admin', 'superadmin']);
     }
 
     public function index(Request $request, Response $response): void
     {
         $userId = Session::getUserId();
         $orgId = $this->orgId();
+        $admin = $this->esAdmin();
 
-        $plantillas = $this->plantillas->listarDisponibles($orgId, $userId, $this->miEspecialidadId());
+        // Admin ve todas (sin filtro de especialidad), profesional solo las de su especialidad
+        $especialidadFiltro = $admin ? null : $this->miEspecialidadId();
+        $plantillas = $this->plantillas->listarDisponibles($orgId, $userId, $especialidadFiltro);
         $tipos = $this->plantillas->tiposDisponibles();
+
+        // Lista de especialidades para el filtro visual del admin
+        $db = Database::getInstance();
+        $especialidades = $db->fetchAll("SELECT id, nombre FROM especialidades WHERE activo = 1 ORDER BY nombre");
 
         $content = View::render('Pages/reportes_clinicos/plantillas', [
             'plantillas' => $plantillas,
             'tipos' => $tipos,
             'esProfesional' => $this->esProfesional(),
+            'esAdmin' => $admin,
+            'especialidades' => $especialidades,
         ]);
 
         $html = View::render('Layouts.panel', ['pageTitle' => 'Reportes Clínicos', 'content' => $content]);
