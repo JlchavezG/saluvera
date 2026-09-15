@@ -170,6 +170,8 @@ $router->group(['prefix' => '/portal', 'middlewares' => ['PortalMiddleware']], f
     $router->get('/citas', [PortalController::class, 'citas']);
     $router->get('/expediente', [PortalController::class, 'expediente']);
     $router->get('/documentos', [PortalController::class, 'documentos']);
+    $router->get('/reportes', [PortalController::class, 'reportesClinicos']);
+    $router->get('/reportes/{id}/ver', [PortalController::class, 'verReporteClinico']);
     $router->get('/documentos/{id}/ver', [PortalController::class, 'verDocumento']);
     $router->get('/salir', [PortalController::class, 'salir']);
 });
@@ -228,6 +230,25 @@ $router->group(['prefix' => '/panel/notificaciones', 'middlewares' => ['AuthMidd
 $router->group(['prefix' => '/panel/reportes', 'middlewares' => ['AuthMiddleware']], function ($router) {
     $router->get('/', [ReporteController::class, 'index']);
     $router->get('/exportar', [ReporteController::class, 'exportar']);
+});
+
+// ============================================================================
+// MODULO REPORTES CLINICOS (plantillas y generador para profesionales)
+// ============================================================================
+$router->group(['prefix' => '/panel/reportes-clinicos', 'middlewares' => ['AuthMiddleware']], function ($router) {
+    $router->get('/', [ReporteClinicoController::class, 'index']);
+    $router->get('/mis-reportes', [ReporteClinicoController::class, 'listarReportes']);
+    $router->get('/crear', [ReporteClinicoController::class, 'crearReporte']);
+    $router->get('/ver/{id}', [ReporteClinicoController::class, 'verReporte']);
+    $router->post('/duplicar', [ReporteClinicoController::class, 'duplicarPlantilla']);
+    $router->post('/eliminar', [ReporteClinicoController::class, 'eliminarPlantilla']);
+    $router->get('/editar/{id}', [ReporteClinicoController::class, 'editarPlantilla']);
+    $router->post('/actualizar', [ReporteClinicoController::class, 'actualizarPlantilla']);
+    $router->post('/guardar', [ReporteClinicoController::class, 'guardarReporte']);
+    $router->post('/firmar', [ReporteClinicoController::class, 'firmarReporte']);
+    $router->post('/compartir', [ReporteClinicoController::class, 'toggleCompartir']);
+    $router->post('/eliminar-reporte', [ReporteClinicoController::class, 'eliminarReporte']);
+    $router->get('/editar-reporte/{id}', [ReporteClinicoController::class, 'editarReporte']);
 });
 // ============================================================================
 // APIS

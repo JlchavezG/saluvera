@@ -308,6 +308,16 @@ class ReporteController
         $consultasPorEstado = $this->plataformaModel->consultasPorEstado();
         $documentosPorTipo = $this->plataformaModel->documentosPorTipo();
 
+        // FASE 2: Engagement y Geografia
+        $organizacionesEnRiesgo = $this->plataformaModel->organizacionesEnRiesgo();
+        $usuariosPorSegmento = $this->plataformaModel->usuariosPorSegmentoAcceso();
+        $alertas = $this->plataformaModel->alertasPlataforma();
+        $pacientesPorEstado = $this->plataformaModel->pacientesPorEstado();
+        $organizacionesUbicacion = $this->plataformaModel->organizacionesConUbicacion();
+        $usoFeatures = $this->plataformaModel->usoFeaturesPorOrganizacion();
+        $cohortesOrgs = $this->plataformaModel->cohortesOrganizaciones();
+        $usuariosPorMes = $this->plataformaModel->usuariosRegistradosPorMes();
+
         $content = View::render('Pages/reportes/plataforma', [
             'kpis' => $kpis,
             'crecimiento' => $crecimiento,
@@ -325,6 +335,14 @@ class ReporteController
             'noShowPorEspecialidad' => $noShowPorEspecialidad,
             'consultasPorEstado' => $consultasPorEstado,
             'documentosPorTipo' => $documentosPorTipo,
+            'organizacionesEnRiesgo' => $organizacionesEnRiesgo,
+            'usuariosPorSegmento' => $usuariosPorSegmento,
+            'alertas' => $alertas,
+            'pacientesPorEstado' => $pacientesPorEstado,
+            'organizacionesUbicacion' => $organizacionesUbicacion,
+            'usoFeatures' => $usoFeatures,
+            'cohortesOrgs' => $cohortesOrgs,
+            'usuariosPorMes' => $usuariosPorMes,
         ]);
 
         $html = View::render('Layouts.panel', ['pageTitle' => 'Reportes de Plataforma', 'content' => $content]);

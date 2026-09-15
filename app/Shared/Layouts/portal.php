@@ -67,6 +67,7 @@ function portalActive(string $currentPath, string $route): string {
             <a href="<?= url('/portal/citas') ?>" class="portal-nav-link<?= portalActive($currentPath, '/portal/citas') ?>">Mis Citas</a>
             <a href="<?= url('/portal/expediente') ?>" class="portal-nav-link<?= portalActive($currentPath, '/portal/expediente') ?>">Mi Expediente</a>
             <a href="<?= url('/portal/documentos') ?>" class="portal-nav-link<?= portalActive($currentPath, '/portal/documentos') ?>">Mis Documentos</a>
+            <a href="<?= url('/portal/reportes') ?>" class="portal-nav-link<?= portalActive($currentPath, '/portal/reportes') ?>">Mis Reportes</a>
         </div>
     </nav>
 

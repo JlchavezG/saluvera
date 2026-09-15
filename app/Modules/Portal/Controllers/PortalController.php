@@ -181,6 +181,70 @@ class PortalController
     // DOCUMENTOS
     // ========================================================================
 
+    public function reportesClinicos(Request $request, Response $response): void
+    {
+        $paciente = $this->portalPaciente();
+
+        if ($paciente === null) {
+            $response->redirectTo('/portal/salir');
+            return;
+        }
+
+        $modelo = new ReportePaciente();
+        $reportes = $modelo->listarCompartidosPortal((int) $paciente['id']);
+
+        $content = View::render('Pages/portal/reportes', [
+            'paciente' => $paciente,
+            'reportes' => $reportes,
+        ]);
+
+        $html = View::render('Layouts.portal', [
+            'pageTitle' => 'Mis Reportes',
+            'content' => $content,
+            'paciente' => $paciente,
+        ]);
+
+        $response->html($html);
+    }
+
+    public function verReporteClinico(Request $request, Response $response): void
+    {
+        $paciente = $this->portalPaciente();
+
+        if ($paciente === null) {
+            $response->redirectTo('/portal/salir');
+            return;
+        }
+
+        $id = (int) $request->routeParam('id', 0);
+
+        $modelo = new ReportePaciente();
+        $reporte = $modelo->buscarCompartidoPortal($id, (int) $paciente['id']);
+
+        if ($reporte === null) {
+            $response->html('<h1>Acceso denegado</h1>', 403);
+            return;
+        }
+
+        $estructura = !empty($reporte['estructura_json']) ? (json_decode($reporte['estructura_json'], true) ?: []) : [];
+        $contenido = !empty($reporte['contenido_json']) ? (json_decode($reporte['contenido_json'], true) ?: []) : [];
+
+        $content = View::render('Pages/portal/reporte_ver', [
+            'paciente' => $paciente,
+            'reporte' => $reporte,
+            'estructura' => $estructura,
+            'contenido' => $contenido,
+        ]);
+
+        $html = View::render('Layouts.portal', [
+            'pageTitle' => $reporte['titulo'],
+            'content' => $content,
+            'paciente' => $paciente,
+        ]);
+
+        $response->html($html);
+    }
+
     public function documentos(Request $request, Response $response): void
     {
         $paciente = $this->portalPaciente();

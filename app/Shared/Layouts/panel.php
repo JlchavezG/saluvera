@@ -133,6 +133,15 @@ function navActive(string $currentPath, string $route): string {
                     </svg>
                     <span class="nav-label">Mis Ganancias</span>
                 </a>
+
+                <?php if ($esProfesional): ?>
+                <a href="<?= url('/panel/reportes-clinicos') ?>" class="nav-item<?= navActive($currentPath, '/panel/reportes-clinicos') ?>" title="Reportes Clínicos">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span class="nav-label">Reportes Clínicos</span>
+                </a>
+                <?php endif; ?>
                 <?php endif; ?>
 
                 <a href="<?= url('/panel/mi-perfil') ?>" class="nav-item<?= navActive($currentPath, '/panel/mi-perfil') ?>" title="Mi Perfil">
@@ -327,5 +336,6 @@ function navActive(string $currentPath, string $route): string {
     </script>
 
     <script src="<?= url('app-assets/js/form-ux.js') ?>?v=1"></script>
+    <script src="<?= url('app-assets/js/loading-ux.js') ?>?v=3.2"></script>
 </body>
 </html>

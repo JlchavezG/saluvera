@@ -26,6 +26,27 @@ $topProcesos = $topProcesos ?? [];
 $noShowPorEspecialidad = $noShowPorEspecialidad ?? [];
 $consultasPorEstado = $consultasPorEstado ?? [];
 $documentosPorTipo = $documentosPorTipo ?? [];
+$organizacionesEnRiesgo = $organizacionesEnRiesgo ?? [];
+$usuariosPorSegmento = $usuariosPorSegmento ?? [];
+$alertas = $alertas ?? ['orgs_sin_actividad' => 0, 'usuarios_en_riesgo' => 0, 'cedulas_por_vencer' => 0];
+$pacientesPorEstado = $pacientesPorEstado ?? [];
+$organizacionesUbicacion = $organizacionesUbicacion ?? [];
+$usoFeatures = $usoFeatures ?? [];
+$cohortesOrgs = $cohortesOrgs ?? [];
+$usuariosPorMes = $usuariosPorMes ?? [];
+
+// Preparar datos para gráficos FASE 2
+$segLabels = array_column($usuariosPorSegmento, 'segmento');
+$segData = array_column($usuariosPorSegmento, 'total');
+
+$estadoLabels = array_column($pacientesPorEstado, 'estado');
+$estadoData = array_column($pacientesPorEstado, 'total');
+
+$cohortesLabels = array_map(fn($c) => date('M Y', strtotime($c['mes'] . '-01')), $cohortesOrgs);
+$cohortesData = array_column($cohortesOrgs, 'total');
+
+$usuariosMesLabels = array_map(fn($c) => date('M Y', strtotime($c['mes'] . '-01')), $usuariosPorMes);
+$usuariosMesData = array_column($usuariosPorMes, 'total');
 
 // Preparar datos para gráficos
 $crecLabels = array_map(fn($c) => date('M Y', strtotime($c['mes'] . '-01')), $crecimiento);
@@ -79,6 +100,14 @@ $procData = array_column($topProcesos, 'total');
     <button class="platform-tab" data-tab="operativa" role="tab" aria-selected="false">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Operativa
+    </button>
+    <button class="platform-tab" data-tab="engagement" role="tab" aria-selected="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Engagement
+    </button>
+    <button class="platform-tab" data-tab="geografia" role="tab" aria-selected="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Geografía
     </button>
 </div>
 
@@ -269,6 +298,30 @@ $procData = array_column($topProcesos, 'total');
             </div>
         <?php endif; ?>
     </div>
+
+    <div class="table-card">
+        <div class="dash-section-title">Uso de features por organización</div>
+        <?php if (empty($usoFeatures)): ?>
+            <div class="empty-state"><h3>Sin datos</h3></div>
+        <?php else: ?>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Organización</th><th style="text-align:right">Citas</th><th style="text-align:right">Consultas</th><th style="text-align:right">Pacientes</th><th style="text-align:right">Horarios</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($usoFeatures as $f): ?>
+                            <tr>
+                                <td><strong><?= htmlspecialchars($f['nombre']) ?></strong></td>
+                                <td style="text-align:right"><?= (int) $f['citas'] ?></td>
+                                <td style="text-align:right"><?= (int) $f['consultas'] ?></td>
+                                <td style="text-align:right"><?= (int) $f['pacientes'] ?></td>
+                                <td style="text-align:right"><?= (int) $f['horarios'] ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <!-- ============================================ -->
@@ -329,8 +382,335 @@ $procData = array_column($topProcesos, 'total');
     </div>
 </div>
 
+<!-- ============================================ -->
+<!-- TAB 5: ENGAGEMENT -->
+<!-- ============================================ -->
+<div class="platform-tab-content" id="tab-engagement" role="tabpanel">
+    <div class="alertas-grid">
+        <div class="alerta-card <?= $alertas['orgs_sin_actividad'] > 0 ? 'alerta-warning' : 'alerta-ok' ?>">
+            <div class="alerta-numero"><?= $alertas['orgs_sin_actividad'] ?></div>
+            <div class="alerta-texto">Organizaciones sin actividad +30 días</div>
+        </div>
+        <div class="alerta-card <?= $alertas['usuarios_en_riesgo'] > 0 ? 'alerta-warning' : 'alerta-ok' ?>">
+            <div class="alerta-numero"><?= $alertas['usuarios_en_riesgo'] ?></div>
+            <div class="alerta-texto">Usuarios sin acceso +90 días</div>
+        </div>
+        <div class="alerta-card <?= $alertas['cedulas_por_vencer'] > 0 ? 'alerta-warning' : 'alerta-ok' ?>">
+            <div class="alerta-numero"><?= $alertas['cedulas_por_vencer'] ?></div>
+            <div class="alerta-texto">Cédulas por vencer (90 días)</div>
+        </div>
+    </div>
+
+    <div class="table-card reportes-chart-card">
+        <div class="dash-section-title">Usuarios por segmento de acceso</div>
+        <?php if (empty($usuariosPorSegmento)): ?>
+            <div class="empty-state"><h3>Sin datos</h3></div>
+        <?php else: ?>
+            <canvas id="chartSegmentos" height="80"></canvas>
+        <?php endif; ?>
+    </div>
+
+    <div class="table-card">
+        <div class="dash-section-title">Organizaciones en riesgo (sin actividad +30 días)</div>
+        <?php if (empty($organizacionesEnRiesgo)): ?>
+            <div class="empty-state"><h3>✓ Todas las organizaciones están activas</h3></div>
+        <?php else: ?>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Organización</th><th>Última cita</th><th style="text-align:right">Días sin actividad</th><th>Nivel</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($organizacionesEnRiesgo as $o): ?>
+                            <?php 
+                                $dias = (int) $o['dias_sin_actividad'];
+                                $nivel = $dias > 90 ? 'Crítico' : ($dias > 60 ? 'Alto' : 'Medio');
+                                $badge = $dias > 90 ? 'badge-cancelada' : ($dias > 60 ? 'badge-pendiente' : 'badge-confirmada');
+                            ?>
+                            <tr>
+                                <td><strong><?= htmlspecialchars($o['nombre']) ?></strong></td>
+                                <td><?= $o['ultima_cita'] ? date('d/m/Y', strtotime($o['ultima_cita'])) : 'Nunca' ?></td>
+                                <td style="text-align:right"><strong><?= $dias >= 999 ? '—' : $dias ?></strong></td>
+                                <td><span class="badge-estado <?= $badge ?>"><?= $nivel ?></span></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="table-card reportes-chart-card">
+        <div class="dash-section-title">Cohortes: Organizaciones creadas por mes</div>
+        <?php if (empty($cohortesOrgs)): ?>
+            <div class="empty-state"><h3>Sin datos</h3></div>
+        <?php else: ?>
+            <canvas id="chartCohortes" height="80"></canvas>
+        <?php endif; ?>
+    </div>
+
+    <div class="table-card reportes-chart-card">
+        <div class="dash-section-title">Usuarios registrados por mes</div>
+        <?php if (empty($usuariosPorMes)): ?>
+            <div class="empty-state"><h3>Sin datos</h3></div>
+        <?php else: ?>
+            <canvas id="chartUsuariosMes" height="80"></canvas>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- TAB 6: GEOGRAFÍA -->
+<!-- ============================================ -->
+<div class="platform-tab-content" id="tab-geografia" role="tabpanel">
+    <div class="table-card">
+        <div class="dash-section-title">Mapa de organizaciones</div>
+        <?php if (empty($organizacionesUbicacion)): ?>
+            <div class="empty-state"><h3>Sin organizaciones con ubicación</h3><p>Agrega latitud y longitud a las organizaciones para verlas aquí</p></div>
+        <?php else: ?>
+            <div id="mapaOrganizaciones" style="height: 400px; border-radius: 12px;"></div>
+        <?php endif; ?>
+    </div>
+
+    <div class="table-card reportes-chart-card">
+        <div class="dash-section-title">Pacientes por estado</div>
+        <?php if (empty($pacientesPorEstado)): ?>
+            <div class="empty-state"><h3>Sin datos de ubicación</h3></div>
+        <?php else: ?>
+            <canvas id="chartEstados" height="100"></canvas>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- TAB 3 AMPLIADO: USO DE FEATURES -->
+<!-- ============================================ -->
+<script>
+// Se agregará al final
+<?php if (!empty($usuariosPorSegmento)): ?>
+new Chart(document.getElementById('chartSegmentos'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($segLabels) ?>,
+        datasets: [{
+            label: 'Usuarios',
+            data: <?= json_encode($segData) ?>,
+            backgroundColor: ['#48BB78', '#4FD1B5', '#EED9A4', '#F6AD55', '#E53E3E'],
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($cohortesOrgs)): ?>
+new Chart(document.getElementById('chartCohortes'), {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($cohortesLabels) ?>,
+        datasets: [{
+            label: 'Organizaciones',
+            data: <?= json_encode($cohortesData) ?>,
+            borderColor: '#4FD1B5',
+            backgroundColor: 'rgba(79, 209, 181, 0.1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($usuariosPorMes)): ?>
+new Chart(document.getElementById('chartUsuariosMes'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($usuariosMesLabels) ?>,
+        datasets: [{
+            label: 'Usuarios',
+            data: <?= json_encode($usuariosMesData) ?>,
+            backgroundColor: '#1C5345',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($pacientesPorEstado)): ?>
+new Chart(document.getElementById('chartEstados'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($estadoLabels) ?>,
+        datasets: [{
+            label: 'Pacientes',
+            data: <?= json_encode($estadoData) ?>,
+            backgroundColor: '#A8DDD0',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($organizacionesUbicacion)): ?>
+// Mapa Leaflet
+(function() {
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = function() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+        
+        setTimeout(function() {
+            const map = L.map('mapaOrganizaciones').setView([23.6345, -102.5528], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            
+            const orgs = <?= json_encode($organizacionesUbicacion) ?>;
+            orgs.forEach(org => {
+                L.marker([parseFloat(org.latitud), parseFloat(org.longitud)])
+                    .addTo(map)
+                    .bindPopup('<strong>' + org.nombre + '</strong>');
+            });
+        }, 500);
+    };
+    document.head.appendChild(script);
+})();
+<?php endif; ?>
+</script>
+
 <!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"><?php if (!empty($usuariosPorSegmento)): ?>
+new Chart(document.getElementById('chartSegmentos'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($segLabels) ?>,
+        datasets: [{
+            label: 'Usuarios',
+            data: <?= json_encode($segData) ?>,
+            backgroundColor: ['#48BB78', '#4FD1B5', '#EED9A4', '#F6AD55', '#E53E3E'],
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($cohortesOrgs)): ?>
+new Chart(document.getElementById('chartCohortes'), {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($cohortesLabels) ?>,
+        datasets: [{
+            label: 'Organizaciones',
+            data: <?= json_encode($cohortesData) ?>,
+            borderColor: '#4FD1B5',
+            backgroundColor: 'rgba(79, 209, 181, 0.1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($usuariosPorMes)): ?>
+new Chart(document.getElementById('chartUsuariosMes'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($usuariosMesLabels) ?>,
+        datasets: [{
+            label: 'Usuarios',
+            data: <?= json_encode($usuariosMesData) ?>,
+            backgroundColor: '#1C5345',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($pacientesPorEstado)): ?>
+new Chart(document.getElementById('chartEstados'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($estadoLabels) ?>,
+        datasets: [{
+            label: 'Pacientes',
+            data: <?= json_encode($estadoData) ?>,
+            backgroundColor: '#A8DDD0',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($organizacionesUbicacion)): ?>
+// Mapa Leaflet
+(function() {
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = function() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+        
+        setTimeout(function() {
+            const map = L.map('mapaOrganizaciones').setView([23.6345, -102.5528], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            
+            const orgs = <?= json_encode($organizacionesUbicacion) ?>;
+            orgs.forEach(org => {
+                L.marker([parseFloat(org.latitud), parseFloat(org.longitud)])
+                    .addTo(map)
+                    .bindPopup('<strong>' + org.nombre + '</strong>');
+            });
+        }, 500);
+    };
+    document.head.appendChild(script);
+})();
+<?php endif; ?>
+</script>
 <script>
 // ============================================
 // TABS
@@ -499,5 +879,116 @@ new Chart(document.getElementById('chartProcesos'), {
         scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
     }
 });
+<?php endif; ?>
+<?php if (!empty($usuariosPorSegmento)): ?>
+new Chart(document.getElementById('chartSegmentos'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($segLabels) ?>,
+        datasets: [{
+            label: 'Usuarios',
+            data: <?= json_encode($segData) ?>,
+            backgroundColor: ['#48BB78', '#4FD1B5', '#EED9A4', '#F6AD55', '#E53E3E'],
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($cohortesOrgs)): ?>
+new Chart(document.getElementById('chartCohortes'), {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($cohortesLabels) ?>,
+        datasets: [{
+            label: 'Organizaciones',
+            data: <?= json_encode($cohortesData) ?>,
+            borderColor: '#4FD1B5',
+            backgroundColor: 'rgba(79, 209, 181, 0.1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($usuariosPorMes)): ?>
+new Chart(document.getElementById('chartUsuariosMes'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($usuariosMesLabels) ?>,
+        datasets: [{
+            label: 'Usuarios',
+            data: <?= json_encode($usuariosMesData) ?>,
+            backgroundColor: '#1C5345',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($pacientesPorEstado)): ?>
+new Chart(document.getElementById('chartEstados'), {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($estadoLabels) ?>,
+        datasets: [{
+            label: 'Pacientes',
+            data: <?= json_encode($estadoData) ?>,
+            backgroundColor: '#A8DDD0',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+<?php endif; ?>
+
+<?php if (!empty($organizacionesUbicacion)): ?>
+// Mapa Leaflet
+(function() {
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = function() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+        
+        setTimeout(function() {
+            const map = L.map('mapaOrganizaciones').setView([23.6345, -102.5528], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            
+            const orgs = <?= json_encode($organizacionesUbicacion) ?>;
+            orgs.forEach(org => {
+                L.marker([parseFloat(org.latitud), parseFloat(org.longitud)])
+                    .addTo(map)
+                    .bindPopup('<strong>' + org.nombre + '</strong>');
+            });
+        }, 500);
+    };
+    document.head.appendChild(script);
+})();
 <?php endif; ?>
 </script>

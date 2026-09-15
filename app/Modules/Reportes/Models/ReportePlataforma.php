@@ -280,4 +280,134 @@ class ReportePlataforma
              ORDER BY mes ASC"
         );
     }
+
+    // ========================================================================
+    // FASE 2: ENGAGEMENT Y RETENCIÓN
+    // ========================================================================
+
+    public function organizacionesEnRiesgo(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT o.id, o.nombre,
+                    MAX(c.fecha_cita) as ultima_cita,
+                    COALESCE(DATEDIFF(CURDATE(), MAX(c.fecha_cita)), 999) as dias_sin_actividad
+             FROM organizaciones o
+             LEFT JOIN citas c ON o.id = c.organizacion_id
+             WHERE o.activo = 1
+             GROUP BY o.id, o.nombre
+             HAVING ultima_cita IS NULL OR dias_sin_actividad > 30
+             ORDER BY dias_sin_actividad DESC"
+        );
+    }
+
+    public function usuariosPorSegmentoAcceso(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT 
+                CASE 
+                    WHEN ultimo_acceso_en IS NULL THEN 'Nunca accedio'
+                    WHEN DATEDIFF(NOW(), ultimo_acceso_en) <= 7 THEN 'Activo (7 dias)'
+                    WHEN DATEDIFF(NOW(), ultimo_acceso_en) <= 30 THEN 'Reciente (8-30 dias)'
+                    WHEN DATEDIFF(NOW(), ultimo_acceso_en) <= 90 THEN 'Inactivo (31-90 dias)'
+                    ELSE 'En riesgo (+90 dias)'
+                END as segmento,
+                COUNT(*) as total
+             FROM usuarios
+             WHERE activo = 1
+             GROUP BY segmento
+             ORDER BY FIELD(segmento, 'Activo (7 dias)', 'Reciente (8-30 dias)', 'Inactivo (31-90 dias)', 'En riesgo (+90 dias)', 'Nunca accedio')"
+        );
+    }
+
+    public function alertasPlataforma(): array
+    {
+        $orgsRiesgo = $this->db->fetchColumn(
+            "SELECT COUNT(DISTINCT o.id) FROM organizaciones o
+             LEFT JOIN citas c ON o.id = c.organizacion_id
+             WHERE o.activo = 1
+             GROUP BY o.id
+             HAVING MAX(c.fecha_cita) IS NULL OR DATEDIFF(CURDATE(), MAX(c.fecha_cita)) > 30"
+        );
+
+        $usuariosRiesgo = $this->db->fetchColumn(
+            "SELECT COUNT(*) FROM usuarios
+             WHERE activo = 1 AND (ultimo_acceso_en IS NULL OR ultimo_acceso_en < DATE_SUB(NOW(), INTERVAL 90 DAY))"
+        );
+
+        $cedulasPorVencer = $this->db->fetchColumn(
+            "SELECT COUNT(*) FROM profesionales
+             WHERE activo = 1 AND cedula_expira IS NOT NULL
+               AND cedula_expira BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 90 DAY)"
+        );
+
+        return [
+            'orgs_sin_actividad' => (int) $orgsRiesgo,
+            'usuarios_en_riesgo' => (int) $usuariosRiesgo,
+            'cedulas_por_vencer' => (int) $cedulasPorVencer,
+        ];
+    }
+
+    // ========================================================================
+    // FASE 2: GEOGRAFÍA
+    // ========================================================================
+
+    public function pacientesPorEstado(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT COALESCE(estado, 'Sin especificar') as estado, COUNT(*) as total
+             FROM pacientes
+             WHERE activo = 1
+             GROUP BY estado
+             ORDER BY total DESC
+             LIMIT 15"
+        );
+    }
+
+    public function organizacionesConUbicacion(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT id, nombre, latitud, longitud
+             FROM organizaciones
+             WHERE activo = 1 AND latitud IS NOT NULL AND longitud IS NOT NULL"
+        );
+    }
+
+    // ========================================================================
+    // FASE 2: USO DE FEATURES Y COHORTES
+    // ========================================================================
+
+    public function usoFeaturesPorOrganizacion(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT 
+                o.nombre,
+                (SELECT COUNT(*) FROM citas c WHERE c.organizacion_id = o.id) as citas,
+                (SELECT COUNT(*) FROM consultas cs INNER JOIN citas c2 ON cs.cita_id = c2.id WHERE c2.organizacion_id = o.id) as consultas,
+                (SELECT COUNT(*) FROM pacientes p WHERE p.organizacion_id = o.id) as pacientes,
+                (SELECT COUNT(*) FROM horarios h INNER JOIN profesionales pr ON h.profesional_id = pr.id WHERE pr.organizacion_id = o.id) as horarios
+             FROM organizaciones o
+             WHERE o.activo = 1
+             ORDER BY citas DESC"
+        );
+    }
+
+    public function cohortesOrganizaciones(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT DATE_FORMAT(creado_en, '%Y-%m') as mes, COUNT(*) as total
+             FROM organizaciones
+             GROUP BY mes
+             ORDER BY mes ASC"
+        );
+    }
+
+    public function usuariosRegistradosPorMes(): array
+    {
+        return $this->db->fetchAll(
+            "SELECT DATE_FORMAT(creado_en, '%Y-%m') as mes, COUNT(*) as total
+             FROM usuarios
+             GROUP BY mes
+             ORDER BY mes ASC"
+        );
+    }
 }
